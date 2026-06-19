@@ -68,7 +68,7 @@ async function main() {
 async function seedContent() {
   const [{ createPrismicClient }, { createPrismicMigration, createPrismicWriteClient }] =
     await Promise.all([
-      import("../apps/prismic-app/src/prismic/create-client"),
+      import("../packages/cms/src/prismic/create-client"),
       import("../apps/prismic-app/src/prismic/write-client"),
     ]);
   const migration = createPrismicMigration();

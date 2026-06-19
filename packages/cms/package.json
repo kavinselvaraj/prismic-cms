@@ -5,6 +5,8 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
+    "./generated/prismicio-types": "./src/generated/prismicio-types.d.ts",
+    "./prismic": "./src/prismic/index.ts",
     "./slices": "./src/slices/index.ts",
     "./slices/*": "./src/slices/*/index.tsx"
   },
@@ -15,8 +17,12 @@
   "peerDependencies": {
     "react": "^19.1.0"
   },
+  "dependencies": {
+    "@prismicio/client": "^7.16.0"
+  },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
+    "@types/node": "^22.15.29",
     "@types/react": "^19.1.6",
     "typescript": "^5.9.3"
   }

@@ -1,6 +1,5 @@
 import * as prismic from "@prismicio/client";
-import { prismicConfig } from "./config";
-import { getRepositoryName } from "./repository";
+import { getRepositoryName, prismicConfig } from "@repo/cms/prismic";
 
 export function createPrismicWriteClient(options?: prismic.ClientConfig) {
   const writeToken = process.env.PRISMIC_WRITE_TOKEN;

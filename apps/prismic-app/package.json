@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev -p 3001",
     "slicemachine": "start-slicemachine",
+    "prismic:types:generate": "prismic-ts-codegen",
     "prismic:models:generate": "tsx ../../scripts/generate-prismic-models.ts",
     "prismic:models:validate": "tsx ../../scripts/validate-labels.ts",
     "lint": "biome check .",
@@ -26,6 +27,7 @@
     "@types/node": "^22.15.29",
     "@types/react": "^19.1.6",
     "@types/react-dom": "^19.1.5",
+    "prismic-ts-codegen": "^0.1.27",
     "tsx": "^4.20.3",
     "typescript": "^5.9.3"
   }
