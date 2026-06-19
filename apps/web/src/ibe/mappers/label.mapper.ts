@@ -1,4 +1,4 @@
-import type { IbeLabels } from "../types/label.types";
+import type { FlightMessages } from "@/i18n/messages";
 
 type IbeLabelDocuments = {
   flightSearch: {
@@ -20,7 +20,7 @@ type IbeLabelDocuments = {
 
 export type IbeLabelMapperInput = IbeLabelDocuments;
 
-export function mapIbeLabels(documents: IbeLabelDocuments): IbeLabels {
+export function mapIbeLabels(documents: IbeLabelDocuments): FlightMessages {
   const { flightSearch, flightSelect } = documents;
   const airportItem = flightSearch.data.airport[0];
 

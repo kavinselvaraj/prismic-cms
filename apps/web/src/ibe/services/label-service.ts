@@ -3,16 +3,16 @@ import path from "node:path";
 import * as prismic from "@prismicio/client";
 import localEn from "../../../messages/en.json";
 import localJa from "../../../messages/ja.json";
+import type { FlightMessages } from "@/i18n/messages";
 import {
   mapIbeLabels,
   type IbeLabelMapperInput,
 } from "../mappers/label.mapper";
-import type { IbeLabels } from "../types/label.types";
 import { routing, type AppLocale } from "@/i18n/routing";
 
 export type LabelSource = "local" | "prismic";
 
-const localMessages: Record<AppLocale, IbeLabels> = {
+const localMessages: Record<AppLocale, FlightMessages> = {
   en: localEn,
   ja: localJa,
 };
@@ -24,7 +24,7 @@ const prismicLocaleMap: Record<AppLocale, string> = {
 
 let cachedEnvOverrides: Record<string, string> | undefined;
 
-export async function getIbeLabels(locale: AppLocale): Promise<IbeLabels> {
+export async function getIbeLabels(locale: AppLocale): Promise<FlightMessages> {
   const source = getServerLabelSource();
 
   console.log("[label-service] load:start", {
@@ -54,7 +54,9 @@ export function resolveLocale(locale: string | undefined): AppLocale {
     : routing.defaultLocale;
 }
 
-async function getIbeLabelsFromPrismic(locale: AppLocale): Promise<IbeLabels> {
+async function getIbeLabelsFromPrismic(
+  locale: AppLocale,
+): Promise<FlightMessages> {
   const repositoryName = getEnvValue("PRISMIC_REPOSITORY_NAME") ?? "";
 
   if (!repositoryName) {
