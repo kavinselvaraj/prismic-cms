@@ -5,8 +5,7 @@
   "repeatable": false,
   "status": true,
   "json": {
-    "Main": {},
-    "Passenger": {
+    "Main": {
       "passenger_passenger_first_name": {
         "type": "Text",
         "config": {
@@ -20,9 +19,24 @@
         }
       },
       "passenger_passenger_us_route": {
-        "type": "Text",
+        "type": "Group",
         "config": {
-          "label": "Us Route"
+          "label": "Us Route",
+          "repeat": true,
+          "fields": {
+            "code": {
+              "type": "Text",
+              "config": {
+                "label": "Code"
+              }
+            },
+            "name": {
+              "type": "Text",
+              "config": {
+                "label": "Name"
+              }
+            }
+          }
         }
       }
     }

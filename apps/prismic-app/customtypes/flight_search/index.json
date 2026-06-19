@@ -5,8 +5,7 @@
   "repeatable": false,
   "status": true,
   "json": {
-    "Main": {},
-    "Flight Search": {
+    "Main": {
       "flight_search_flight_search_airport_label": {
         "type": "Text",
         "config": {

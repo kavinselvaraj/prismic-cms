@@ -5,8 +5,7 @@
   "repeatable": false,
   "status": true,
   "json": {
-    "Main": {},
-    "Flight Select": {
+    "Main": {
       "flight_select_flight_select_from_date": {
         "type": "Text",
         "config": {
