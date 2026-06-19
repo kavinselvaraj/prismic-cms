@@ -2,15 +2,9 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import {
-  getFlightSearchDocument,
-  getFlightSelectDocument,
-} from "../../web/src/i18n/documents";
-
-type LabelDocument = Record<string, unknown> & {
-  modelId: string;
-  modelType: "page" | "custom";
-  uid?: string;
-};
+  getPrismicDocuments,
+  type PrismicLabelDocument,
+} from "../../web/src/i18n/prismic-document-registry";
 
 type PrismicField = {
   type: "StructuredText" | "Text" | "UID";
@@ -32,10 +26,7 @@ type PrismicModel = {
 };
 
 const outputRoot = path.resolve("customtypes");
-const documents = [
-  getFlightSearchDocument("en"),
-  getFlightSelectDocument("en"),
-] satisfies LabelDocument[];
+const documents = getPrismicDocuments("en");
 
 if (isMainModule()) {
   for (const document of documents) {
@@ -52,7 +43,9 @@ if (isMainModule()) {
   console.log(`Generated ${documents.length} Prismic model(s).`);
 }
 
-export function createPrismicModel(document: LabelDocument): PrismicModel {
+export function createPrismicModel(
+  document: PrismicLabelDocument,
+): PrismicModel {
   const tabs = createPrismicTabs(document);
 
   if (document.modelType === "page") {
@@ -76,13 +69,13 @@ export function createPrismicModel(document: LabelDocument): PrismicModel {
   };
 }
 
-function createPrismicTabs(document: LabelDocument) {
+function createPrismicTabs(document: PrismicLabelDocument) {
   const tabs: Record<string, Record<string, PrismicField>> = {
     Main: {},
   };
-  const contentRoot = getContentRoot(document);
+  const fieldIds = new Set<string>();
 
-  for (const [pathKey, value] of flattenObject(contentRoot)) {
+  for (const [pathKey, value] of flattenObject(document.content)) {
     const tabName = getTabName(pathKey);
 
     if (!tabs[tabName]) {
@@ -91,6 +84,14 @@ function createPrismicTabs(document: LabelDocument) {
 
     const fullPathKey = `${document.modelId}.${pathKey}`;
     const fieldId = createFieldId(fullPathKey);
+
+    if (fieldIds.has(fieldId)) {
+      throw new Error(
+        `Duplicate generated field ID "${fieldId}" in ${document.modelId}`,
+      );
+    }
+
+    fieldIds.add(fieldId);
     tabs[tabName][fieldId] = createField(pathKey, value);
   }
 
@@ -154,26 +155,10 @@ export function createFieldId(pathKey: string) {
     .toLowerCase();
 }
 
-function getContentRoot(document: LabelDocument) {
-  const rootEntry = Object.entries(document).find(
-    ([key, value]) => !isMetadataPath(key) && value && typeof value === "object",
-  );
-
-  if (!rootEntry) {
-    return {};
-  }
-
-  return rootEntry[1];
-}
-
 function getTabName(pathKey: string) {
   const pathParts = pathKey.split(".");
 
   return pathParts.length > 1 ? toReadableLabel(pathParts[0] ?? "Main") : "Main";
-}
-
-function isMetadataPath(pathKey: string) {
-  return ["page", "modelId", "modelType", "uid"].includes(pathKey);
 }
 
 function toReadableLabel(value: string) {

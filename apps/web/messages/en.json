@@ -9,5 +9,15 @@
   "flight_select": {
     "from_date": "Departure date",
     "to_date": "Return date"
+  },
+  "passenger": {
+    "first_name": "First name",
+    "last_name": "Last name",
+    "us_route": [
+      {
+        "code": "NRT",
+        "name": "Narita Airport"
+      }
+    ]
   }
 }

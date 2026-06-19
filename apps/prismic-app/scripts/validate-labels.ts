@@ -1,20 +1,11 @@
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import {
-  getFlightSearchDocument,
-  getFlightSelectDocument,
-} from "../../web/src/i18n/documents";
+  getPrismicDocuments,
+  type PrismicLabelDocument,
+} from "../../web/src/i18n/prismic-document-registry";
 import { createFieldId, createPrismicModel } from "./generate-prismic-models";
-
-type LabelDocument = Record<string, unknown> & {
-  modelId: string;
-  modelType: "page" | "custom";
-};
-
-const documents = [
-  getFlightSearchDocument("en"),
-  getFlightSelectDocument("en"),
-] satisfies LabelDocument[];
+const documents = getPrismicDocuments("en");
 
 const errors: string[] = [];
 
@@ -30,7 +21,7 @@ if (errors.length > 0) {
 
 console.log("CMS labels and Prismic models are valid.");
 
-function validateGeneratedModel(document: LabelDocument) {
+function validateGeneratedModel(document: PrismicLabelDocument) {
   const modelPath = path.resolve(
     "customtypes",
     document.modelId,
@@ -60,10 +51,9 @@ function validateGeneratedModel(document: LabelDocument) {
   }
 }
 
-function validateDuplicateFieldIds(document: LabelDocument) {
-  const fieldIds = flattenObject(document)
-    .filter(([pathKey]) => !["page", "modelId", "modelType", "uid"].includes(pathKey))
-    .map(([pathKey]) => createFieldId(pathKey));
+function validateDuplicateFieldIds(document: PrismicLabelDocument) {
+  const fieldIds = flattenObject(document.content)
+    .map(([pathKey]) => createFieldId(`${document.modelId}.${pathKey}`));
   const duplicates = fieldIds.filter(
     (fieldId, index) => fieldIds.indexOf(fieldId) !== index,
   );

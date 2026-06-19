@@ -1,20 +1,16 @@
-import localEn from "../../../messages/en.json";
-import localJa from "../../../messages/ja.json";
 import {
   createPrismicClient,
   getRepositoryName,
   getSharedEnvValue,
 } from "@repo/cms/prismic";
-import type { FlightMessages } from "@/i18n/messages";
+import {
+  localMessages,
+  type FlightMessages,
+} from "@/i18n/messages";
 import { routing, type AppLocale } from "@/i18n/routing";
 import { resolvePrismicLabels } from "../utils/resolve-prismic-labels";
 
 export type LabelSource = "local" | "prismic";
-
-const localMessages: Record<AppLocale, FlightMessages> = {
-  en: localEn,
-  ja: localJa,
-};
 
 const prismicLocaleMap: Record<AppLocale, string> = {
   en: "en-us",
@@ -106,7 +102,7 @@ async function getIbeLabelsFromPrismic(
           childTypes: childDocuments.map((document) => document.type),
         });
 
-        const labels = resolvePrismicLabels(localEn, {
+        const labels = resolvePrismicLabels(localMessages.en, {
           flight_search: flightSearch as { data: Record<string, unknown> },
           flight_select: flightSelect as { data: Record<string, unknown> },
         });
@@ -146,7 +142,7 @@ async function getIbeLabelsFromPrismic(
     flightSelectData: flightSelect.data,
   });
 
-  const labels = resolvePrismicLabels(localEn, {
+  const labels = resolvePrismicLabels(localMessages.en, {
     flight_search: flightSearch as { data: Record<string, unknown> },
     flight_select: flightSelect as { data: Record<string, unknown> },
   });

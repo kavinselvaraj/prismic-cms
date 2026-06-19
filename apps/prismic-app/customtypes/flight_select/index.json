@@ -5,14 +5,15 @@
   "repeatable": false,
   "status": true,
   "json": {
-    "Main": {
-      "flight_select_from_date": {
+    "Main": {},
+    "Flight Select": {
+      "flight_select_flight_select_from_date": {
         "type": "Text",
         "config": {
           "label": "From Date"
         }
       },
-      "flight_select_to_date": {
+      "flight_select_flight_select_to_date": {
         "type": "Text",
         "config": {
           "label": "To Date"

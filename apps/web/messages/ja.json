@@ -9,5 +9,9 @@
   "flight_select": {
     "from_date": "出発日",
     "to_date": "帰着日"
+  },
+  "passenger": {
+    "first_name": "First name",
+    "last_name": "Last name"
   }
 }

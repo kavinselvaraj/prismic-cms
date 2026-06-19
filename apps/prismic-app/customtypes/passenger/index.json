@@ -1,0 +1,24 @@
+{
+  "id": "passenger",
+  "label": "Passenger",
+  "format": "custom",
+  "repeatable": false,
+  "status": true,
+  "json": {
+    "Main": {},
+    "Passenger": {
+      "passenger_passenger_first_name": {
+        "type": "Text",
+        "config": {
+          "label": "First Name"
+        }
+      },
+      "passenger_passenger_last_name": {
+        "type": "Text",
+        "config": {
+          "label": "Last Name"
+        }
+      }
+    }
+  }
+}

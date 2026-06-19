@@ -1,18 +1,11 @@
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import {
-  getFlightSearchDocument,
-  getFlightSelectDocument,
-} from "../../web/src/i18n/documents";
+  getPrismicDocuments,
+  type PrismicLabelDocument,
+} from "../../web/src/i18n/prismic-document-registry";
 import type { AppLocale } from "../../web/src/i18n/routing";
 import { createFieldId, createPrismicModel } from "./generate-prismic-models";
-
-type LabelDocument = Record<string, unknown> & {
-  modelId: string;
-  modelType: "page" | "custom";
-  page?: string;
-  uid?: string;
-};
 
 type ExistingDocument = {
   id: string;
@@ -38,10 +31,7 @@ const prismicLocale = toPrismicLocale(locale);
 
 loadEnvFiles();
 
-const documents = [
-  getFlightSearchDocument(locale),
-  getFlightSelectDocument(locale),
-] satisfies LabelDocument[];
+const documents = getPrismicDocuments(locale);
 
 main().catch((error) => {
   console.error(formatError(error));
@@ -205,7 +195,7 @@ async function findExistingDocument(
     ) => Promise<unknown>;
     getSingle: (type: string, options: { lang: string }) => Promise<unknown>;
   },
-  document: LabelDocument,
+  document: PrismicLabelDocument,
 ): Promise<ExistingDocument | undefined> {
   try {
     if (document.uid) {
@@ -222,7 +212,7 @@ async function findExistingDocument(
   }
 }
 
-function createPrismicDocumentData(document: LabelDocument) {
+function createPrismicDocumentData(document: PrismicLabelDocument) {
   const model = createPrismicModel(document);
   const fields = Object.values(model.json).reduce<
     Record<
@@ -237,12 +227,8 @@ function createPrismicDocumentData(document: LabelDocument) {
   >((accumulator, tabFields) => ({ ...accumulator, ...tabFields }), {});
   const data: Record<string, unknown> = {};
 
-  for (const [pathKey, value] of flattenObject(document)) {
-    if (isMetadataPath(pathKey)) {
-      continue;
-    }
-
-    const fieldId = createFieldId(pathKey);
+  for (const [pathKey, value] of flattenObject(document.content)) {
+    const fieldId = createFieldId(`${document.modelId}.${pathKey}`);
     const field = fields[fieldId];
 
     if (!field) {
@@ -319,11 +305,7 @@ function flattenObject(
   );
 }
 
-function isMetadataPath(pathKey: string) {
-  return ["page", "modelId", "modelType", "uid"].includes(pathKey);
-}
-
-function createDocumentTitle(document: LabelDocument) {
+function createDocumentTitle(document: PrismicLabelDocument) {
   if (document.page && typeof document.page === "string") {
     return `${toReadableLabel(document.page)} Page`;
   }
