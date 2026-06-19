@@ -2,7 +2,7 @@
   "flight_search": {
     "airport": {
       "label": "Airport",
-      "name": "Airport"
+      "name": "Airport name"
     },
     "ptc": "Passengers"
   },
@@ -11,28 +11,44 @@
     "to_date": "Return date"
   },
   "passenger": {
-    "from_date": "Departure date",
-    "to_date": "Return date",
-    "thai_route": [
-      {
-        "code": "NRT",
-        "name": "Narita Airport"
-      }
-    ],
     "personal_info": {
-      "first_name": "First name",
-      "last_name": "Last name"
+      "first_name": "Given name",
+      "last_name": "Family name",
+      "middle_name": "Middle name",
+      "date_of_birth": "Date of birth"
     },
     "travel_info": {
+      "region_label": "Preferred route region",
       "us_route": [
         {
+          "code": "LAX",
+          "name": "Los Angeles International Airport"
+        },
+        {
+          "code": "SFO",
+          "name": "San Francisco International Airport"
+        }
+      ],
+      "asia_route": [
+        {
           "code": "NRT",
-          "name": "Narita Airport"
+          "name": "Narita International Airport"
+        },
+        {
+          "code": "SIN",
+          "name": "Singapore Changi Airport"
         }
       ]
     },
     "documents": {
-      "passport_number": "Passport number"
+      "passport_number": "Passport number",
+      "passport_expiry": "Passport expiry date",
+      "nationality": "Nationality"
+    },
+    "preferences": {
+      "meal_preference": "Meal preference",
+      "seat_preference": "Seat preference",
+      "special_assistance": "Special assistance"
     }
   }
 }

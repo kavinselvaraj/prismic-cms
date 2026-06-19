@@ -5,23 +5,44 @@
   "repeatable": false,
   "status": true,
   "json": {
-    "Main": {
-      "passenger_passenger_from_date": {
+    "Main": {},
+    "Personal Info": {
+      "passenger_passenger_personal_info_first_name": {
         "type": "Text",
         "config": {
-          "label": "From Date"
+          "label": "First Name"
         }
       },
-      "passenger_passenger_to_date": {
+      "passenger_passenger_personal_info_last_name": {
         "type": "Text",
         "config": {
-          "label": "To Date"
+          "label": "Last Name"
         }
       },
-      "passenger_passenger_thai_route": {
+      "passenger_passenger_personal_info_middle_name": {
+        "type": "Text",
+        "config": {
+          "label": "Middle Name"
+        }
+      },
+      "passenger_passenger_personal_info_date_of_birth": {
+        "type": "Text",
+        "config": {
+          "label": "Date Of Birth"
+        }
+      }
+    },
+    "Travel Info": {
+      "passenger_passenger_travel_info_region_label": {
+        "type": "Text",
+        "config": {
+          "label": "Region Label"
+        }
+      },
+      "passenger_passenger_travel_info_us_route": {
         "type": "Group",
         "config": {
-          "label": "Thai Route",
+          "label": "Us Route",
           "repeat": true,
           "fields": {
             "code": {
@@ -38,27 +59,11 @@
             }
           }
         }
-      }
-    },
-    "Personal Info": {
-      "passenger_passenger_personal_info_first_name": {
-        "type": "Text",
-        "config": {
-          "label": "First Name"
-        }
       },
-      "passenger_passenger_personal_info_last_name": {
-        "type": "Text",
-        "config": {
-          "label": "Last Name"
-        }
-      }
-    },
-    "Travel Info": {
-      "passenger_passenger_travel_info_us_route": {
+      "passenger_passenger_travel_info_asia_route": {
         "type": "Group",
         "config": {
-          "label": "Us Route",
+          "label": "Asia Route",
           "repeat": true,
           "fields": {
             "code": {
@@ -82,6 +87,38 @@
         "type": "Text",
         "config": {
           "label": "Passport Number"
+        }
+      },
+      "passenger_passenger_documents_passport_expiry": {
+        "type": "Text",
+        "config": {
+          "label": "Passport Expiry"
+        }
+      },
+      "passenger_passenger_documents_nationality": {
+        "type": "Text",
+        "config": {
+          "label": "Nationality"
+        }
+      }
+    },
+    "Preferences": {
+      "passenger_passenger_preferences_meal_preference": {
+        "type": "Text",
+        "config": {
+          "label": "Meal Preference"
+        }
+      },
+      "passenger_passenger_preferences_seat_preference": {
+        "type": "Text",
+        "config": {
+          "label": "Seat Preference"
+        }
+      },
+      "passenger_passenger_preferences_special_assistance": {
+        "type": "Text",
+        "config": {
+          "label": "Special Assistance"
         }
       }
     }

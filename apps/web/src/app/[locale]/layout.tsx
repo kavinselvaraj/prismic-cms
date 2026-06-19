@@ -37,6 +37,7 @@ export default async function LocaleLayout({
           <Link href={`/${locale}`}>Landing</Link>
           <Link href={`/${locale}/flight-search`}>Flight Search</Link>
           <Link href={`/${locale}/flight-select`}>Flight Selection</Link>
+          <Link href={`/${locale}/passenger`}>Passenger</Link>
         </nav>
 
         <LocaleSwitcher currentLocale={locale as "en" | "ja"} />

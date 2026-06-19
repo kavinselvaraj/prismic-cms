@@ -11,7 +11,44 @@
     "to_date": "帰着日"
   },
   "passenger": {
-    "first_name": "First name",
-    "last_name": "Last name"
+    "personal_info": {
+      "first_name": "名",
+      "last_name": "姓",
+      "middle_name": "ミドルネーム",
+      "date_of_birth": "生年月日"
+    },
+    "travel_info": {
+      "region_label": "希望ルート地域",
+      "us_route": [
+        {
+          "code": "LAX",
+          "name": "ロサンゼルス国際空港"
+        },
+        {
+          "code": "SFO",
+          "name": "サンフランシスコ国際空港"
+        }
+      ],
+      "asia_route": [
+        {
+          "code": "NRT",
+          "name": "成田国際空港"
+        },
+        {
+          "code": "SIN",
+          "name": "シンガポール・チャンギ空港"
+        }
+      ]
+    },
+    "documents": {
+      "passport_number": "旅券番号",
+      "passport_expiry": "旅券有効期限",
+      "nationality": "国籍"
+    },
+    "preferences": {
+      "meal_preference": "機内食の希望",
+      "seat_preference": "座席の希望",
+      "special_assistance": "特別なお手伝い"
+    }
   }
 }
