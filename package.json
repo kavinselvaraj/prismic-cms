@@ -6,7 +6,6 @@
     "build": "turbo build",
     "prismic:types:generate": "pnpm --filter prismic-app prismic:types:generate",
     "prismic:models:generate": "pnpm --filter prismic-app prismic:models:generate",
-    "prismic:figma:generate": "pnpm --filter prismic-app prismic:figma:generate",
     "prismic:seed": "pnpm --filter prismic-app prismic:seed",
     "prismic:seed:dry": "pnpm --filter prismic-app prismic:seed:dry",
     "prismic:validate": "pnpm --filter prismic-app prismic:validate",

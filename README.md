@@ -35,7 +35,6 @@ Most developers add or update local content JSON, schemas, and page services in
 apps/prismic-app/customtypes/
 apps/prismic-app/slicemachine.config.json
 apps/prismic-app/scripts/
-apps/prismic-app/artifacts/
 apps/prismic-app/src/prismic/
 ```
 

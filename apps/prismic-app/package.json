@@ -7,7 +7,6 @@
     "slicemachine": "start-slicemachine",
     "prismic:types:generate": "prismic-ts-codegen",
     "prismic:models:generate": "tsx scripts/generate-prismic-models.ts",
-    "prismic:figma:generate": "tsx scripts/generate-figma-label-map.ts",
     "prismic:seed": "tsx scripts/seed-prismic-content.ts --write",
     "prismic:seed:dry": "tsx scripts/seed-prismic-content.ts",
     "prismic:validate": "tsx scripts/validate-labels.ts",

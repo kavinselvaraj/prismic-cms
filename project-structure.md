@@ -40,7 +40,6 @@ apps/
 
   prismic-app/
     customtypes/
-    artifacts/
     scripts/
     src/
       app/
