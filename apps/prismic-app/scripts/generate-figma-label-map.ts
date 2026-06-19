@@ -3,7 +3,7 @@ import path from "node:path";
 import {
   getFlightSearchDocument,
   getFlightSelectDocument,
-} from "../apps/web/src/i18n/documents";
+} from "../../web/src/i18n/documents";
 import { createFieldId } from "./generate-prismic-models";
 
 type FigmaMapping = {
@@ -15,7 +15,7 @@ type FigmaMapping = {
   prismicFieldId: string;
 };
 
-const outputPath = path.resolve("prismic/figma-label-map.json");
+const outputPath = path.resolve("artifacts/figma-label-map.json");
 const existingMappings = readExistingMappings();
 const generatedMappings = [
   ...createMappings("Flight Search", getFlightSearchDocument("en")),

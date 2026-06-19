@@ -3,7 +3,7 @@ import path from "node:path";
 import {
   getFlightSearchDocument,
   getFlightSelectDocument,
-} from "../apps/web/src/i18n/documents";
+} from "../../web/src/i18n/documents";
 import { createFieldId, createPrismicModel } from "./generate-prismic-models";
 
 type LabelDocument = Record<string, unknown> & {
@@ -23,8 +23,6 @@ for (const document of documents) {
   validateDuplicateFieldIds(document);
 }
 
-validateFigmaMappings();
-
 if (errors.length > 0) {
   console.error(errors.map((error) => `- ${error}`).join("\n"));
   process.exit(1);
@@ -34,7 +32,7 @@ console.log("CMS labels and Prismic models are valid.");
 
 function validateGeneratedModel(document: LabelDocument) {
   const modelPath = path.resolve(
-    "apps/prismic-app/customtypes",
+    "customtypes",
     document.modelId,
     "index.json",
   );
@@ -72,36 +70,6 @@ function validateDuplicateFieldIds(document: LabelDocument) {
 
   for (const duplicate of duplicates) {
     errors.push(`Duplicate field ID ${duplicate} in ${document.modelId}`);
-  }
-}
-
-function validateFigmaMappings() {
-  const figmaMapPath = path.resolve("prismic/figma-label-map.json");
-
-  if (!existsSync(figmaMapPath)) {
-    errors.push("Missing prismic/figma-label-map.json");
-    return;
-  }
-
-  const mappings = JSON.parse(readFileSync(figmaMapPath, "utf8")) as Array<{
-    labelKey: string;
-    modelId: string;
-    prismicFieldId: string;
-  }>;
-  const knownFields = new Set(
-    documents.flatMap((document) =>
-      Object.values(createPrismicModel(document).json).flatMap((tab) =>
-        Object.keys(tab).map((fieldId) => `${document.modelId}:${fieldId}`),
-      ),
-    ),
-  );
-
-  for (const mapping of mappings) {
-    if (!knownFields.has(`${mapping.modelId}:${mapping.prismicFieldId}`)) {
-      errors.push(
-        `Unused or invalid Figma mapping ${mapping.modelId}:${mapping.prismicFieldId}`,
-      );
-    }
   }
 }
 

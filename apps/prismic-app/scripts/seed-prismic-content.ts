@@ -3,8 +3,8 @@ import path from "node:path";
 import {
   getFlightSearchDocument,
   getFlightSelectDocument,
-} from "../apps/web/src/i18n/documents";
-import type { AppLocale } from "../apps/web/src/i18n/routing";
+} from "../../web/src/i18n/documents";
+import type { AppLocale } from "../../web/src/i18n/routing";
 import { createFieldId, createPrismicModel } from "./generate-prismic-models";
 
 type LabelDocument = Record<string, unknown> & {
@@ -68,8 +68,8 @@ async function main() {
 async function seedContent() {
   const [{ createPrismicClient }, { createPrismicMigration, createPrismicWriteClient }] =
     await Promise.all([
-      import("../packages/cms/src/prismic/create-client"),
-      import("../apps/prismic-app/src/prismic/write-client"),
+      import("../../../packages/cms/src/prismic/create-client"),
+      import("../src/prismic/write-client"),
     ]);
   const migration = createPrismicMigration();
   const readClient = createPrismicClient();
@@ -353,7 +353,12 @@ function readArgValue(name: string) {
 }
 
 function loadEnvFiles() {
-  for (const envFilePath of [".env", ".env.local"]) {
+  for (const envFilePath of [
+    ".env",
+    ".env.local",
+    "../../.env",
+    "../../.env.local",
+  ]) {
     const resolvedPath = path.resolve(envFilePath);
 
     if (!existsSync(resolvedPath)) {

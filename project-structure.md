@@ -40,18 +40,22 @@ apps/
 
   prismic-app/
     customtypes/
+    artifacts/
+    scripts/
     src/
       app/
-      generated/
       prismic/
-        config.ts
-        create-client.ts
-        repository.ts
         write-client.ts
 
 packages/
   cms/
     src/
+      generated/
+        prismicio-types.d.ts
+      prismic/
+        config.ts
+        create-client.ts
+        repository.ts
       slices/
         HeroSection/
         PopularRoutes/
@@ -59,21 +63,12 @@ packages/
       index.ts
 
   typescript-config/
-
-scripts/
-  generate-prismic-models.ts
-  validate-labels.ts
-  generate-figma-label-map.ts
-  seed-prismic-content.ts
-
-prismic/
-  figma-label-map.json
 ```
 
 ## Responsibility Split
 
-- `apps/web`: website routes, local content JSON, page schemas, page services,
-  and Prismic read/fallback logic.
+- `apps/web`: website routes, local label JSON, and app-level label services.
 - `apps/prismic-app`: Slice Machine, custom type JSON, and Prismic migration or
   write utilities.
-- `packages/cms`: reusable slice components only.
+- `packages/cms`: shared Prismic client, generated Prismic types, and reusable
+  slice components.

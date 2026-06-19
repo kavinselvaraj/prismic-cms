@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 import {
   getFlightSearchDocument,
   getFlightSelectDocument,
-} from "../apps/web/src/i18n/documents";
+} from "../../web/src/i18n/documents";
 
 type LabelDocument = Record<string, unknown> & {
   modelId: string;
@@ -31,7 +31,7 @@ type PrismicModel = {
   };
 };
 
-const outputRoot = path.resolve("apps/prismic-app/customtypes");
+const outputRoot = path.resolve("customtypes");
 const documents = [
   getFlightSearchDocument("en"),
   getFlightSelectDocument("en"),

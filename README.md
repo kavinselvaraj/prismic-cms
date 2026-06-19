@@ -14,15 +14,6 @@ apps/
 packages/
   cms/            Shared Prismic slice rendering components only
   typescript-config/
-
-scripts/
-  generate-prismic-models.ts
-  validate-labels.ts
-  generate-figma-label-map.ts
-  seed-prismic-content.ts
-
-prismic/
-  figma-label-map.json
 ```
 
 ## Ownership
@@ -43,6 +34,8 @@ Most developers add or update local content JSON, schemas, and page services in
 ```txt
 apps/prismic-app/customtypes/
 apps/prismic-app/slicemachine.config.json
+apps/prismic-app/scripts/
+apps/prismic-app/artifacts/
 apps/prismic-app/src/prismic/
 ```
 
@@ -64,11 +57,12 @@ generation logic.
 pnpm dev:web
 pnpm dev:prismic
 pnpm slicemachine
-pnpm cms:generate
-pnpm cms:seed:dry
-pnpm cms:seed
-pnpm cms:validate
-pnpm cms:check
+pnpm prismic:types:generate
+pnpm prismic:models:generate
+pnpm prismic:seed:dry
+pnpm prismic:seed
+pnpm prismic:validate
+pnpm prismic:check
 ```
 
 ## New Page Flow
@@ -77,10 +71,10 @@ pnpm cms:check
 2. Add the Zod schema under `apps/web/src/content/{page}/{page}.schema.ts`.
 3. Add the page service under `apps/web/src/content/{page}/{page}.service.ts`.
 4. Add or update the Next.js route in `apps/web/src/app`.
-5. Run `pnpm cms:generate`.
+5. Run `pnpm prismic:models:generate`.
 6. Confirm the model appears under `apps/prismic-app/customtypes`.
 7. The Prismic owner reviews and syncs the custom type in Slice Machine.
-8. Seed initial content with `pnpm cms:seed` or configure it in Prismic.
+8. Seed initial content with `pnpm prismic:seed` or configure it in Prismic.
 
 ## How Web Reads Content
 
@@ -114,13 +108,13 @@ content from the repo JSON files.
 Dry run:
 
 ```bash
-pnpm cms:seed:dry
+pnpm prismic:seed:dry
 ```
 
 Write to Prismic:
 
 ```bash
-pnpm cms:seed
+pnpm prismic:seed
 ```
 
 Required environment variables:
