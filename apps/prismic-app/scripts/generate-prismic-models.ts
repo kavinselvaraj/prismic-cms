@@ -6,13 +6,22 @@ import {
   type PrismicLabelDocument,
 } from "../../web/src/i18n/prismic-document-registry";
 
-type PrismicField = {
-  type: "StructuredText" | "Text" | "UID";
-  config: {
-    label: string;
-    single?: string;
+type PrismicField =
+  | {
+    type: "StructuredText" | "Text" | "UID";
+    config: {
+      label: string;
+      single?: string;
+    };
+  }
+  | {
+    type: "Group";
+    config: {
+      label: string;
+      repeat: true;
+      fields: Record<string, PrismicField>;
+    };
   };
-};
 
 type PrismicModel = {
   id: string;
@@ -76,7 +85,7 @@ function createPrismicTabs(document: PrismicLabelDocument) {
   const fieldIds = new Set<string>();
 
   for (const [pathKey, value] of flattenObject(document.content)) {
-    const tabName = getTabName(pathKey);
+    const tabName = getTabName(document.modelId, pathKey);
 
     if (!tabs[tabName]) {
       tabs[tabName] = {};
@@ -92,10 +101,51 @@ function createPrismicTabs(document: PrismicLabelDocument) {
     }
 
     fieldIds.add(fieldId);
+    if (isArrayOfObjects(value)) {
+      tabs[tabName][fieldId] = createGroupField(pathKey, value);
+      continue;
+    }
+
     tabs[tabName][fieldId] = createField(pathKey, value);
   }
 
   return tabs;
+}
+
+function createGroupField(
+  pathKey: string,
+  value: Array<Record<string, unknown>>,
+): PrismicField {
+  const firstItem = value[0] ?? {};
+  const fields: Record<string, PrismicField> = {};
+
+  for (const [key, nestedValue] of Object.entries(firstItem)) {
+    fields[key] = createField(`${pathKey}.${key}`, nestedValue);
+  }
+
+  return {
+    type: "Group",
+    config: {
+      label: toReadableLabel(pathKey.split(".").at(-1) ?? pathKey),
+      repeat: true,
+      fields,
+    },
+  };
+}
+
+function isArrayOfObjects(
+  value: unknown,
+): value is Array<Record<string, unknown>> {
+  return (
+    Array.isArray(value) &&
+    value.length > 0 &&
+    value.every(
+      (item) =>
+        item &&
+        typeof item === "object" &&
+        !Array.isArray(item),
+    )
+  );
 }
 
 function flattenObject(
@@ -155,10 +205,15 @@ export function createFieldId(pathKey: string) {
     .toLowerCase();
 }
 
-function getTabName(pathKey: string) {
+function getTabName(modelId: string, pathKey: string) {
   const pathParts = pathKey.split(".");
+  const firstPart = pathParts[0];
 
-  return pathParts.length > 1 ? toReadableLabel(pathParts[0] ?? "Main") : "Main";
+  if (!firstPart || firstPart === modelId) {
+    return "Main";
+  }
+
+  return pathParts.length > 1 ? toReadableLabel(firstPart) : "Main";
 }
 
 function toReadableLabel(value: string) {

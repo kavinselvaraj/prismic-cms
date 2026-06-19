@@ -18,6 +18,12 @@
         "config": {
           "label": "Last Name"
         }
+      },
+      "passenger_passenger_us_route": {
+        "type": "Text",
+        "config": {
+          "label": "Us Route"
+        }
       }
     }
   }
