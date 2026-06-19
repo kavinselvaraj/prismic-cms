@@ -112,6 +112,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@prismicio/client':
+        specifier: ^7.16.0
+        version: 7.21.8
       '@prismicio/next':
         specifier: ^2.2.4
         version: 2.2.4(@prismicio/client@7.21.8)(next@15.5.19(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)
@@ -130,6 +133,9 @@ importers:
       react-dom:
         specifier: ^19.1.0
         version: 19.2.7(react@19.2.7)
+      zod:
+        specifier: ^3.25.67
+        version: 3.25.76
     devDependencies:
       '@repo/typescript-config':
         specifier: workspace:*
@@ -149,22 +155,13 @@ importers:
 
   packages/cms:
     dependencies:
-      '@prismicio/client':
-        specifier: ^7.16.0
-        version: 7.21.8
-      '@prismicio/react':
-        specifier: ^2.9.1
-        version: 2.9.2(@prismicio/client@7.21.8)(react@19.2.7)
-      zod:
-        specifier: ^3.25.67
-        version: 3.25.76
+      react:
+        specifier: ^19.1.0
+        version: 19.2.7
     devDependencies:
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
-      '@types/node':
-        specifier: ^22.15.29
-        version: 22.19.21
       '@types/react':
         specifier: ^19.1.6
         version: 19.2.17

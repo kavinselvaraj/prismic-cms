@@ -1,11 +1,11 @@
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
-import aboutLabels from "../packages/cms/src/features/about/lang/en.json";
-import { aboutSchema } from "../packages/cms/src/features/about/about.schema";
-import homeLabels from "../packages/cms/src/features/home/lang/en.json";
-import { homeSchema } from "../packages/cms/src/features/home/home.schema";
-import sharedLabels from "../packages/cms/src/shared/lang/en.json";
-import { sharedSchema } from "../packages/cms/src/shared/shared.schema";
+import aboutLabels from "../apps/web/src/content/about/lang/en.json";
+import { aboutSchema } from "../apps/web/src/content/about/about.schema";
+import homeLabels from "../apps/web/src/content/home/lang/en.json";
+import { homeSchema } from "../apps/web/src/content/home/home.schema";
+import sharedLabels from "../apps/web/src/content/shared/lang/en.json";
+import { sharedSchema } from "../apps/web/src/content/shared/shared.schema";
 import { createFieldId, createPrismicModel } from "./generate-prismic-models";
 
 type LabelDocument = Record<string, unknown> & {

@@ -1,6 +1,6 @@
-import aboutLabels from "../features/about/lang/en.json";
-import homeLabels from "../features/home/lang/en.json";
-import sharedLabels from "../shared/lang/en.json";
+import aboutLabels from "../../content/about/lang/en.json";
+import homeLabels from "../../content/home/lang/en.json";
+import sharedLabels from "../../content/shared/lang/en.json";
 import { createPrismicClient } from "./create-client";
 import { pageModelMap, toPrismicLocale } from "./config";
 import type {

@@ -1,7 +1,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
-import aboutLabels from "../packages/cms/src/features/about/lang/en.json";
-import homeLabels from "../packages/cms/src/features/home/lang/en.json";
+import aboutLabels from "../apps/web/src/content/about/lang/en.json";
+import homeLabels from "../apps/web/src/content/home/lang/en.json";
 import { createFieldId } from "./generate-prismic-models";
 
 type FigmaMapping = {

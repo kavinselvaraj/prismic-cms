@@ -1,3 +1,3 @@
-import { createPrismicClient } from "@repo/cms";
+import { createPrismicClient } from "./prismic/create-client";
 
 export const createClient = createPrismicClient;

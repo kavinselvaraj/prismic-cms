@@ -1,6 +1,6 @@
-import type { AboutPageLabels } from "../features/about/types";
-import type { HomePageLabels } from "../features/home/types";
-import type { SharedLabels } from "../shared/types";
+import type { AboutPageLabels } from "../../content/about/types";
+import type { HomePageLabels } from "../../content/home/types";
+import type { SharedLabels } from "../../content/shared/types";
 
 export type AppLocale = "en" | "ja";
 export type PageName = "home" | "about";

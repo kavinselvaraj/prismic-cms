@@ -1,5 +1,6 @@
-import { getAboutPageContent, RichTextSection } from "@repo/cms";
-import type { AppLocale } from "@repo/cms";
+import { getAboutPageContent } from "@/content/about/about.service";
+import type { AppLocale } from "@/lib/prismic/types";
+import { RichTextSection } from "@repo/cms";
 import type { Metadata } from "next";
 
 type PageProps = {

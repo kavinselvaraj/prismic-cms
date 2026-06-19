@@ -1,5 +1,6 @@
-import { getHomePageContent, HeroSection, PopularRoutes } from "@repo/cms";
-import type { AppLocale } from "@repo/cms";
+import { getHomePageContent } from "@/content/home/home.service";
+import type { AppLocale } from "@/lib/prismic/types";
+import { HeroSection, PopularRoutes } from "@repo/cms";
 import type { Metadata } from "next";
 
 type PageProps = {
