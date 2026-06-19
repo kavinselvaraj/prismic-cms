@@ -64,9 +64,73 @@ async function getIbeLabelsFromPrismic(
     repositoryName,
   });
 
-  // Today the IBE service orchestrates child documents.
-  // When a parent `ibe` custom type is added in Prismic, fetch that parent here
-  // and resolve the child document list before calling the generic resolver.
+  try {
+    const ibeDocument = (await client.getSingle("ibe", {
+      lang,
+    })) as {
+      id: string;
+      lang: string;
+      data: Record<string, unknown>;
+    };
+
+    console.log("[label-service] IBE PARENT RESPONSE", {
+      locale,
+      ibeId: ibeDocument.id,
+      ibeLang: ibeDocument.lang,
+      ibeData: ibeDocument.data,
+    });
+
+    const childIds = Object.values(ibeDocument.data)
+      .filter(isPrismicDocumentLink)
+      .map((value) => value.id)
+      .filter(Boolean);
+
+    if (childIds.length > 0) {
+      const childDocuments = (await client.getAllByIDs(childIds, {
+        lang,
+      })) as Array<{
+        id: string;
+        type: string;
+        lang: string;
+        data: Record<string, unknown>;
+      }>;
+      const childDocumentMap = Object.fromEntries(
+        childDocuments.map((document) => [document.type, document]),
+      );
+      const flightSearch = childDocumentMap.flight_search;
+      const flightSelect = childDocumentMap.flight_select;
+
+      if (flightSearch && flightSelect) {
+        console.log("[label-service] IBE CHILD DOCS RESOLVED", {
+          locale,
+          childTypes: childDocuments.map((document) => document.type),
+        });
+
+        const labels = resolvePrismicLabels(localEn, {
+          flight_search: flightSearch as { data: Record<string, unknown> },
+          flight_select: flightSelect as { data: Record<string, unknown> },
+        });
+
+        console.log("[label-service] MAPPED LABELS", {
+          locale,
+          labels,
+        });
+
+        return labels;
+      }
+    }
+
+    console.warn("[label-service] IBE PARENT INCOMPLETE, falling back to direct child fetch", {
+      locale,
+      childIds,
+    });
+  } catch (error) {
+    console.warn("[label-service] IBE PARENT FETCH FAILED, falling back to direct child fetch", {
+      locale,
+      message: error instanceof Error ? error.message : String(error),
+    });
+  }
+
   const [flightSearch, flightSelect] = await Promise.all([
     client.getSingle("flight_search", { lang }),
     client.getSingle("flight_select", { lang }),
@@ -93,4 +157,15 @@ async function getIbeLabelsFromPrismic(
   });
 
   return labels;
+}
+
+function isPrismicDocumentLink(
+  value: unknown,
+): value is { id: string; type?: string; uid?: string | null } {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "id" in value &&
+    typeof (value as { id?: unknown }).id === "string"
+  );
 }

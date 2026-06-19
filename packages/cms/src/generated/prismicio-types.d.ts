@@ -147,7 +147,45 @@ interface FlightSelectDocumentData {
  */
 export type FlightSelectDocument<Lang extends string = string> = prismic.PrismicDocumentWithoutUID<Simplify<FlightSelectDocumentData>, "flight_select", Lang>;
 
-export type AllDocumentTypes = FlightSearchDocument | FlightSelectDocument;
+/**
+ * Content for IBE documents
+ */
+interface IbeDocumentData {
+	/**
+	 * Flight Search field in *IBE*
+	 *
+	 * - **Field Type**: Content Relationship
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: ibe.flight_search
+	 * - **Tab**: Main
+	 * - **Documentation**: https://prismic.io/docs/fields/content-relationship
+	 */
+	flight_search: prismic.ContentRelationshipField<"flight_search">;
+	
+	/**
+	 * Flight Select field in *IBE*
+	 *
+	 * - **Field Type**: Content Relationship
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: ibe.flight_select
+	 * - **Tab**: Main
+	 * - **Documentation**: https://prismic.io/docs/fields/content-relationship
+	 */
+	flight_select: prismic.ContentRelationshipField<"flight_select">;
+}
+
+/**
+ * IBE document from Prismic
+ *
+ * - **API ID**: `ibe`
+ * - **Repeatable**: `false`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type IbeDocument<Lang extends string = string> = prismic.PrismicDocumentWithoutUID<Simplify<IbeDocumentData>, "ibe", Lang>;
+
+export type AllDocumentTypes = FlightSearchDocument | FlightSelectDocument | IbeDocument;
 
 /**
  * Primary content in *HeroSection → Default → Primary*
@@ -266,6 +304,29 @@ type PopularRoutesSliceVariation = PopularRoutesSliceDefault
 export type PopularRoutesSlice = prismic.SharedSlice<"popular_routes", PopularRoutesSliceVariation>;
 
 /**
+ * Default variation for RichText Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type RichTextSliceDefault = prismic.SharedSliceVariation<"default", Record<string, never>, never>;
+
+/**
+ * Slice variation for *RichText*
+ */
+type RichTextSliceVariation = RichTextSliceDefault
+
+/**
+ * RichText Shared Slice
+ *
+ * - **API ID**: `rich_text`
+ * - **Description**: RichText
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type RichTextSlice = prismic.SharedSlice<"rich_text", RichTextSliceVariation>;
+
+/**
  * Primary content in *RichTextSection → Default → Primary*
  */
 export interface RichTextSectionSliceDefaultPrimary {
@@ -333,6 +394,8 @@ declare module "@prismicio/client" {
 			FlightSearchDocumentDataAirportItem,
 			FlightSelectDocument,
 			FlightSelectDocumentData,
+			IbeDocument,
+			IbeDocumentData,
 			AllDocumentTypes,
 			HeroSectionSlice,
 			HeroSectionSliceDefaultPrimary,
@@ -342,6 +405,9 @@ declare module "@prismicio/client" {
 			PopularRoutesSliceDefaultPrimary,
 			PopularRoutesSliceVariation,
 			PopularRoutesSliceDefault,
+			RichTextSlice,
+			RichTextSliceVariation,
+			RichTextSliceDefault,
 			RichTextSectionSlice,
 			RichTextSectionSliceDefaultPrimary,
 			RichTextSectionSliceVariation,

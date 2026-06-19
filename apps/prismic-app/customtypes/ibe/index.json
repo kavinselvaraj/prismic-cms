@@ -1,0 +1,27 @@
+{
+  "id": "ibe",
+  "label": "IBE",
+  "format": "custom",
+  "repeatable": false,
+  "status": true,
+  "json": {
+    "Main": {
+      "flight_search": {
+        "type": "Link",
+        "config": {
+          "label": "Flight Search",
+          "select": "document",
+          "customtypes": ["flight_search"]
+        }
+      },
+      "flight_select": {
+        "type": "Link",
+        "config": {
+          "label": "Flight Select",
+          "select": "document",
+          "customtypes": ["flight_select"]
+        }
+      }
+    }
+  }
+}
