@@ -1,0 +1,57 @@
+{
+  "id": "about_page",
+  "label": "About Page",
+  "format": "custom",
+  "repeatable": false,
+  "status": true,
+  "json": {
+    "Main": {
+      "hero_title": {
+        "type": "StructuredText",
+        "config": {
+          "label": "Hero Title",
+          "single": "heading1,heading2,strong,em"
+        }
+      },
+      "hero_subtitle": {
+        "type": "StructuredText",
+        "config": {
+          "label": "Hero Subtitle",
+          "single": "paragraph,strong,em"
+        }
+      },
+      "content_title": {
+        "type": "StructuredText",
+        "config": {
+          "label": "Content Title",
+          "single": "heading1,heading2,strong,em"
+        }
+      },
+      "content_description": {
+        "type": "StructuredText",
+        "config": {
+          "label": "Content Description",
+          "single": "paragraph,strong,em"
+        }
+      },
+      "seo_meta_title": {
+        "type": "Text",
+        "config": {
+          "label": "SEO Meta Title"
+        }
+      },
+      "seo_meta_description": {
+        "type": "Text",
+        "config": {
+          "label": "SEO Meta Description"
+        }
+      },
+      "uid": {
+        "type": "UID",
+        "config": {
+          "label": "UID"
+        }
+      }
+    }
+  }
+}

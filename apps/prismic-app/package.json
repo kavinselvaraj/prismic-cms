@@ -1,0 +1,32 @@
+{
+  "name": "prismic-app",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 3001",
+    "slicemachine": "start-slicemachine",
+    "prismic:models:generate": "tsx ../../scripts/generate-prismic-models.ts",
+    "prismic:models:validate": "tsx ../../scripts/validate-labels.ts",
+    "lint": "biome check .",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@prismicio/client": "^7.16.0",
+    "@prismicio/next": "^2.2.4",
+    "@prismicio/react": "^2.9.1",
+    "@repo/cms": "workspace:*",
+    "next": "^15.5.19",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "slice-machine-ui": "^2.16.0"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "@slicemachine/adapter-next": "^0.3.88",
+    "@types/node": "^22.15.29",
+    "@types/react": "^19.1.6",
+    "@types/react-dom": "^19.1.5",
+    "tsx": "^4.20.3",
+    "typescript": "^5.9.3"
+  }
+}

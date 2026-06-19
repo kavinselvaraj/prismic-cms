@@ -1,0 +1,15 @@
+{
+  "modelId": "shared_labels",
+  "modelType": "custom",
+  "common": {
+    "buttons": {
+      "search": "Search",
+      "submit": "Submit",
+      "cancel": "Cancel",
+      "continue": "Continue"
+    },
+    "validation": {
+      "required": "This field is required"
+    }
+  }
+}

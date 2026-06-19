@@ -1,0 +1,18 @@
+[
+  {
+    "figmaPage": "Home",
+    "figmaSection": "Hero",
+    "figmaLayer": "Hero / Title",
+    "labelKey": "sections.hero.title",
+    "modelId": "home_page",
+    "prismicFieldId": "hero_title"
+  },
+  {
+    "figmaPage": "Home",
+    "figmaSection": "Hero",
+    "figmaLayer": "Hero / Primary CTA",
+    "labelKey": "sections.hero.primaryCta",
+    "modelId": "home_page",
+    "prismicFieldId": "hero_primary_cta"
+  }
+]

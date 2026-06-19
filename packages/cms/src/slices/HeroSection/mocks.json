@@ -1,0 +1,25 @@
+[
+  {
+    "__TYPE__": "SharedSliceContent",
+    "variation": "default",
+    "primary": {
+      "title": [
+        {
+          "type": "heading1",
+          "text": "Book your next trip with confidence",
+          "spans": []
+        }
+      ],
+      "subtitle": [
+        {
+          "type": "paragraph",
+          "text": "Search flights, compare prices, and manage your journey easily.",
+          "spans": []
+        }
+      ],
+      "primary_cta": "Search flights",
+      "secondary_cta": "View offers"
+    },
+    "items": []
+  }
+]

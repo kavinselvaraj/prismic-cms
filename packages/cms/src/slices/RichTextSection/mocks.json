@@ -1,0 +1,23 @@
+[
+  {
+    "__TYPE__": "SharedSliceContent",
+    "variation": "default",
+    "primary": {
+      "title": [
+        {
+          "type": "heading2",
+          "text": "Flexible content",
+          "spans": []
+        }
+      ],
+      "description": [
+        {
+          "type": "paragraph",
+          "text": "Use this section for editorial content.",
+          "spans": []
+        }
+      ]
+    },
+    "items": []
+  }
+]

@@ -1,0 +1,17 @@
+[
+  {
+    "__TYPE__": "SharedSliceContent",
+    "variation": "default",
+    "primary": {
+      "title": [
+        {
+          "type": "heading2",
+          "text": "Popular routes",
+          "spans": []
+        }
+      ],
+      "view_all": "View all routes"
+    },
+    "items": []
+  }
+]

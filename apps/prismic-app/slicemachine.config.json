@@ -1,0 +1,8 @@
+{
+  "repositoryName": "next-js-ssr",
+  "adapter": "@slicemachine/adapter-next",
+  "libraries": [
+    "../../packages/cms/src/slices"
+  ],
+  "localSliceSimulatorURL": "http://localhost:3001/slice-simulator"
+}

@@ -1,0 +1,15 @@
+packages:
+  - apps/*
+  - packages/*
+
+allowBuilds:
+  '@biomejs/biome': set this to true or false
+  '@scarf/scarf': set this to true or false
+  esbuild: set this to true or false
+  sharp: set this to true or false
+
+ignoredBuiltDependencies:
+  - '@biomejs/biome@1.9.4'
+  - '@scarf/scarf@1.4.0'
+  - esbuild@0.28.1
+  - sharp@0.34.5

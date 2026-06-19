@@ -1,0 +1,32 @@
+{
+  "id": "rich_text_section",
+  "type": "SharedSlice",
+  "name": "RichTextSection",
+  "description": "Simple title and rich text content block",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "https://prismic.io/docs/slices",
+      "version": "initial",
+      "description": "Default rich text section",
+      "primary": {
+        "title": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Title",
+            "single": "heading2,heading3,strong,em"
+          }
+        },
+        "description": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Description",
+            "multi": "paragraph,strong,em,hyperlink"
+          }
+        }
+      },
+      "items": {}
+    }
+  ]
+}

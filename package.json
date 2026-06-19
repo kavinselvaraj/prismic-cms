@@ -1,0 +1,27 @@
+{
+  "name": "api-next-js",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "turbo build",
+    "cms:check": "pnpm cms:generate && pnpm cms:validate",
+    "cms:generate": "tsx scripts/generate-prismic-models.ts",
+    "cms:seed": "tsx scripts/seed-prismic-content.ts --write",
+    "cms:seed:dry": "tsx scripts/seed-prismic-content.ts",
+    "cms:validate": "tsx scripts/validate-labels.ts",
+    "dev:prismic": "pnpm --filter prismic-app dev",
+    "dev:web": "pnpm --filter web dev",
+    "format": "biome format --write .",
+    "dev": "turbo dev",
+    "lint": "turbo lint",
+    "slicemachine": "pnpm --filter prismic-app slicemachine",
+    "typecheck": "turbo typecheck"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "tsx": "^4.20.3",
+    "turbo": "^2.9.18",
+    "typescript": "^5.9.3"
+  },
+  "packageManager": "pnpm@10.12.1"
+}
