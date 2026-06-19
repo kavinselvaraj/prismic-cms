@@ -1,14 +1,13 @@
-import { existsSync, readFileSync } from "node:fs";
-import path from "node:path";
-import * as prismic from "@prismicio/client";
 import localEn from "../../../messages/en.json";
 import localJa from "../../../messages/ja.json";
-import type { FlightMessages } from "@/i18n/messages";
 import {
-  mapIbeLabels,
-  type IbeLabelMapperInput,
-} from "../mappers/label.mapper";
+  createPrismicClient,
+  getRepositoryName,
+  getSharedEnvValue,
+} from "@repo/cms/prismic";
+import type { FlightMessages } from "@/i18n/messages";
 import { routing, type AppLocale } from "@/i18n/routing";
+import { resolvePrismicLabels } from "../utils/resolve-prismic-labels";
 
 export type LabelSource = "local" | "prismic";
 
@@ -21,8 +20,6 @@ const prismicLocaleMap: Record<AppLocale, string> = {
   en: "en-us",
   ja: "ja-jp",
 };
-
-let cachedEnvOverrides: Record<string, string> | undefined;
 
 export async function getIbeLabels(locale: AppLocale): Promise<FlightMessages> {
   const source = getServerLabelSource();
@@ -45,7 +42,7 @@ export async function getIbeLabels(locale: AppLocale): Promise<FlightMessages> {
 }
 
 export function getServerLabelSource(): LabelSource {
-  return getEnvValue("LABEL_SOURCE") === "prismic" ? "prismic" : "local";
+  return getSharedEnvValue("LABEL_SOURCE") === "prismic" ? "prismic" : "local";
 }
 
 export function resolveLocale(locale: string | undefined): AppLocale {
@@ -57,16 +54,9 @@ export function resolveLocale(locale: string | undefined): AppLocale {
 async function getIbeLabelsFromPrismic(
   locale: AppLocale,
 ): Promise<FlightMessages> {
-  const repositoryName = getEnvValue("PRISMIC_REPOSITORY_NAME") ?? "";
-
-  if (!repositoryName) {
-    throw new Error("PRISMIC_REPOSITORY_NAME is required when LABEL_SOURCE=prismic");
-  }
-
   const lang = prismicLocaleMap[locale] ?? prismicLocaleMap.en;
-  const client = prismic.createClient(repositoryName, {
-    accessToken: getEnvValue("PRISMIC_ACCESS_TOKEN"),
-  });
+  const repositoryName = getRepositoryName();
+  const client = createPrismicClient();
 
   console.log("[label-service] PRISMIC API HIT", {
     locale,
@@ -74,8 +64,9 @@ async function getIbeLabelsFromPrismic(
     repositoryName,
   });
 
-  // Today the IBE container orchestrates child documents through the service.
-  // When a parent `ibe` custom type is added in Prismic, resolve child references here.
+  // Today the IBE service orchestrates child documents.
+  // When a parent `ibe` custom type is added in Prismic, fetch that parent here
+  // and resolve the child document list before calling the generic resolver.
   const [flightSearch, flightSelect] = await Promise.all([
     client.getSingle("flight_search", { lang }),
     client.getSingle("flight_select", { lang }),
@@ -91,10 +82,10 @@ async function getIbeLabelsFromPrismic(
     flightSelectData: flightSelect.data,
   });
 
-  const labels = mapIbeLabels({
-    flightSearch,
-    flightSelect,
-  } as unknown as IbeLabelMapperInput);
+  const labels = resolvePrismicLabels(localEn, {
+    flight_search: flightSearch as { data: Record<string, unknown> },
+    flight_select: flightSelect as { data: Record<string, unknown> },
+  });
 
   console.log("[label-service] MAPPED LABELS", {
     locale,
@@ -102,63 +93,4 @@ async function getIbeLabelsFromPrismic(
   });
 
   return labels;
-}
-
-function getEnvValue(key: string) {
-  return process.env[key] ?? getEnvOverrides()[key];
-}
-
-function getEnvOverrides() {
-  if (cachedEnvOverrides) {
-    return cachedEnvOverrides;
-  }
-
-  const cwd = process.cwd();
-  const envFilePaths = [
-    path.resolve(cwd, ".env.local"),
-    path.resolve(cwd, ".env"),
-    path.resolve(cwd, "../../.env.local"),
-    path.resolve(cwd, "../../.env"),
-  ];
-  const overrides: Record<string, string> = {};
-
-  for (const envFilePath of envFilePaths) {
-    if (!existsSync(envFilePath)) {
-      continue;
-    }
-
-    for (const line of readFileSync(envFilePath, "utf8").split(/\r?\n/)) {
-      const trimmedLine = line.trim();
-
-      if (!trimmedLine || trimmedLine.startsWith("#")) {
-        continue;
-      }
-
-      const separatorIndex = trimmedLine.indexOf("=");
-
-      if (separatorIndex === -1) {
-        continue;
-      }
-
-      const name = trimmedLine.slice(0, separatorIndex).trim();
-      const value = trimmedLine.slice(separatorIndex + 1).trim();
-
-      if (!name || overrides[name]) {
-        continue;
-      }
-
-      overrides[name] = value.replace(/^["']|["']$/g, "");
-    }
-  }
-
-  cachedEnvOverrides = overrides;
-
-  console.log("[label-service] env:fallback", {
-    cwd,
-    labelSource: overrides.LABEL_SOURCE,
-    hasPrismicRepository: Boolean(overrides.PRISMIC_REPOSITORY_NAME),
-    hasPrismicAccessToken: Boolean(overrides.PRISMIC_ACCESS_TOKEN),
-  });
-
-  return overrides;
 }

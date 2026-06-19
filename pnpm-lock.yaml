@@ -118,6 +118,9 @@ importers:
       '@prismicio/client':
         specifier: ^7.16.0
         version: 7.21.8
+      '@repo/cms':
+        specifier: workspace:*
+        version: link:../../packages/cms
       next:
         specifier: ^15.5.19
         version: 15.5.19(react-dom@19.2.7(react@19.2.7))(react@19.2.7)

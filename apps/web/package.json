@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@prismicio/client": "^7.16.0",
+    "@repo/cms": "workspace:*",
     "next": "^15.5.19",
     "next-intl": "^4.0.0",
     "react": "^19.1.0",
