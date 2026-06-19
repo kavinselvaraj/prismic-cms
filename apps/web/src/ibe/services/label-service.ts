@@ -102,10 +102,10 @@ async function getIbeLabelsFromPrismic(
           childTypes: childDocuments.map((document) => document.type),
         });
 
-        const labels = resolvePrismicLabels(localMessages.en, {
-          flight_search: flightSearch as { data: Record<string, unknown> },
-          flight_select: flightSelect as { data: Record<string, unknown> },
-        });
+        const labels = resolvePrismicLabels(
+          localMessages.en,
+          childDocumentMap as Record<string, { data: Record<string, unknown> }>,
+        );
 
         console.log("[label-service] MAPPED LABELS", {
           locale,
@@ -127,9 +127,10 @@ async function getIbeLabelsFromPrismic(
     });
   }
 
-  const [flightSearch, flightSelect] = await Promise.all([
+  const [flightSearch, flightSelect, passenger] = await Promise.all([
     client.getSingle("flight_search", { lang }),
     client.getSingle("flight_select", { lang }),
+    client.getSingle("passenger", { lang }).catch(() => undefined),
   ]);
 
   console.log("[label-service] PRISMIC RAW RESPONSE", {
@@ -140,11 +141,19 @@ async function getIbeLabelsFromPrismic(
     flightSelectId: flightSelect.id,
     flightSelectLang: flightSelect.lang,
     flightSelectData: flightSelect.data,
+    passengerId: passenger?.id,
+    passengerLang: passenger?.lang,
+    passengerData: passenger?.data,
   });
 
   const labels = resolvePrismicLabels(localMessages.en, {
     flight_search: flightSearch as { data: Record<string, unknown> },
     flight_select: flightSelect as { data: Record<string, unknown> },
+    ...(passenger
+      ? {
+          passenger: passenger as { data: Record<string, unknown> },
+        }
+      : {}),
   });
 
   console.log("[label-service] MAPPED LABELS", {

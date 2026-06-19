@@ -217,12 +217,7 @@ function createPrismicDocumentData(document: PrismicLabelDocument) {
   const fields = Object.values(model.json).reduce<
     Record<
       string,
-      {
-        type: string;
-        config?: {
-          single?: string;
-        };
-      }
+      PrismicSeedField
     >
   >((accumulator, tabFields) => ({ ...accumulator, ...tabFields }), {});
   const data: Record<string, unknown> = {};
@@ -250,14 +245,13 @@ function toPrismicFieldValue({
   field,
   value,
 }: {
-  field: {
-    type: string;
-    config?: {
-      single?: string;
-    };
-  };
+  field: PrismicSeedField;
   value: unknown;
 }) {
+  if (field.type === "Group") {
+    return toPrismicGroupValue(value, field.config.fields);
+  }
+
   const text = String(value ?? "");
 
   if (field.type !== "StructuredText") {
@@ -271,6 +265,31 @@ function toPrismicFieldValue({
       spans: [],
     },
   ];
+}
+
+function toPrismicGroupValue(
+  value: unknown,
+  fields: Record<string, PrismicSeedField>,
+) {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value.map((item) => {
+    if (!item || typeof item !== "object" || Array.isArray(item)) {
+      return {};
+    }
+
+    return Object.fromEntries(
+      Object.entries(fields).map(([key, nestedField]) => [
+        key,
+        toPrismicFieldValue({
+          field: nestedField,
+          value: (item as Record<string, unknown>)[key],
+        }),
+      ]),
+    );
+  });
 }
 
 function selectStructuredTextBlockType(single?: string) {
@@ -382,3 +401,20 @@ function getDocumentIdOverride(modelId: string, locale: AppLocale) {
 
   return value?.trim() ? value.trim() : undefined;
 }
+
+type PrismicSeedField =
+  | {
+      type: "StructuredText" | "Text" | "UID";
+      config?: {
+        label?: string;
+        single?: string;
+      };
+    }
+  | {
+      type: "Group";
+      config: {
+        label: string;
+        repeat: true;
+        fields: Record<string, PrismicSeedField>;
+      };
+    };

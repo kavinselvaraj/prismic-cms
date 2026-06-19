@@ -25,7 +25,25 @@ function mapObject(
   }
 
   if (Array.isArray(value)) {
-    return value;
+    if (!rootKey) {
+      return value;
+    }
+
+    const fieldId = [rootKey, rootKey, ...pathParts].join("_");
+    const documentData = documents[rootKey]?.data ?? {};
+    const groupValue = documentData[fieldId];
+
+    if (!Array.isArray(groupValue)) {
+      return value;
+    }
+
+    const templateItem = value[0];
+
+    if (!templateItem || typeof templateItem !== "object" || Array.isArray(templateItem)) {
+      return groupValue;
+    }
+
+    return groupValue.map((item) => mapGroupItem(templateItem, item));
   }
 
   if (typeof value !== "object") {
@@ -33,7 +51,7 @@ function mapObject(
       return value;
     }
 
-    const fieldId = [rootKey, ...pathParts].join("_");
+    const fieldId = [rootKey, rootKey, ...pathParts].join("_");
     const documentData = documents[rootKey]?.data ?? {};
 
     return String(documentData[fieldId] ?? "");
@@ -49,5 +67,30 @@ function mapObject(
         mapObject(nestedValue, documents, nextRootKey, nextPathParts),
       ];
     }),
+  );
+}
+
+function mapGroupItem(template: unknown, value: unknown): unknown {
+  if (template === null || template === undefined) {
+    return "";
+  }
+
+  if (Array.isArray(template)) {
+    return Array.isArray(value) ? value : template;
+  }
+
+  if (typeof template !== "object") {
+    return value ?? "";
+  }
+
+  const item = value && typeof value === "object" && !Array.isArray(value)
+    ? (value as Record<string, unknown>)
+    : {};
+
+  return Object.fromEntries(
+    Object.entries(template).map(([key, nestedTemplate]) => [
+      key,
+      mapGroupItem(nestedTemplate, item[key]),
+    ]),
   );
 }

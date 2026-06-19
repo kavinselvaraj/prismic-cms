@@ -15,6 +15,14 @@ type PrismicField =
     };
   }
   | {
+    type: "Link";
+    config: {
+      label: string;
+      select: "document";
+      customtypes: string[];
+    };
+  }
+  | {
     type: "Group";
     config: {
       label: string;
@@ -39,17 +47,12 @@ const documents = getPrismicDocuments("en");
 
 if (isMainModule()) {
   for (const document of documents) {
-    const model = createPrismicModel(document);
-    const outputDirectory = path.join(outputRoot, document.modelId);
-
-    mkdirSync(outputDirectory, { recursive: true });
-    writeFileSync(
-      path.join(outputDirectory, "index.json"),
-      `${JSON.stringify(model, null, 2)}\n`,
-    );
+    writeModel(document.modelId, createPrismicModel(document));
   }
 
-  console.log(`Generated ${documents.length} Prismic model(s).`);
+  writeModel("ibe", createIbeModel(documents));
+
+  console.log(`Generated ${documents.length + 1} Prismic model(s).`);
 }
 
 export function createPrismicModel(
@@ -74,6 +77,37 @@ export function createPrismicModel(
     status: true,
     json: {
       ...tabs,
+    },
+  };
+}
+
+export function createIbeModel(
+  documents: PrismicLabelDocument[],
+): PrismicModel {
+  const mainFields = Object.fromEntries(
+    documents
+      .filter((document) => document.modelId !== "ibe")
+      .map((document) => [
+        document.modelId,
+        {
+          type: "Link",
+          config: {
+            label: toReadableLabel(document.modelId),
+            select: "document" as const,
+            customtypes: [document.modelId],
+          },
+        } satisfies PrismicField,
+      ]),
+  );
+
+  return {
+    id: "ibe",
+    label: "IBE",
+    format: "custom",
+    repeatable: false,
+    status: true,
+    json: {
+      Main: mainFields,
     },
   };
 }
@@ -235,4 +269,14 @@ function isMainModule() {
   return process.argv[1]
     ? fileURLToPath(import.meta.url) === path.resolve(process.argv[1])
     : false;
+}
+
+function writeModel(modelId: string, model: PrismicModel) {
+  const outputDirectory = path.join(outputRoot, modelId);
+
+  mkdirSync(outputDirectory, { recursive: true });
+  writeFileSync(
+    path.join(outputDirectory, "index.json"),
+    `${JSON.stringify(model, null, 2)}\n`,
+  );
 }

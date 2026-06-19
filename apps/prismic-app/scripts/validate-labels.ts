@@ -4,7 +4,11 @@ import {
   getPrismicDocuments,
   type PrismicLabelDocument,
 } from "../../web/src/i18n/prismic-document-registry";
-import { createFieldId, createPrismicModel } from "./generate-prismic-models";
+import {
+  createFieldId,
+  createIbeModel,
+  createPrismicModel,
+} from "./generate-prismic-models";
 const documents = getPrismicDocuments("en");
 
 const errors: string[] = [];
@@ -13,6 +17,8 @@ for (const document of documents) {
   validateGeneratedModel(document);
   validateDuplicateFieldIds(document);
 }
+
+validateGeneratedIbeModel(documents);
 
 if (errors.length > 0) {
   console.error(errors.map((error) => `- ${error}`).join("\n"));
@@ -60,6 +66,32 @@ function validateDuplicateFieldIds(document: PrismicLabelDocument) {
 
   for (const duplicate of duplicates) {
     errors.push(`Duplicate field ID ${duplicate} in ${document.modelId}`);
+  }
+}
+
+function validateGeneratedIbeModel(documents: PrismicLabelDocument[]) {
+  const modelPath = path.resolve("customtypes", "ibe", "index.json");
+
+  if (!existsSync(modelPath)) {
+    errors.push("Missing generated model for ibe");
+    return;
+  }
+
+  const generated = JSON.parse(readFileSync(modelPath, "utf8")) as ReturnType<
+    typeof createIbeModel
+  >;
+  const expected = createIbeModel(documents);
+  const generatedFields = Object.values(generated.json).flatMap((tab) =>
+    Object.keys(tab),
+  );
+  const expectedFields = Object.values(expected.json).flatMap((tab) =>
+    Object.keys(tab),
+  );
+
+  for (const fieldId of expectedFields) {
+    if (!generatedFields.includes(fieldId)) {
+      errors.push(`Missing field ${fieldId} in ibe`);
+    }
   }
 }
 

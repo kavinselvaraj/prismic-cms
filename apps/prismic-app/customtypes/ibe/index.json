@@ -11,7 +11,9 @@
         "config": {
           "label": "Flight Search",
           "select": "document",
-          "customtypes": ["flight_search"]
+          "customtypes": [
+            "flight_search"
+          ]
         }
       },
       "flight_select": {
@@ -19,7 +21,19 @@
         "config": {
           "label": "Flight Select",
           "select": "document",
-          "customtypes": ["flight_select"]
+          "customtypes": [
+            "flight_select"
+          ]
+        }
+      },
+      "passenger": {
+        "type": "Link",
+        "config": {
+          "label": "Passenger",
+          "select": "document",
+          "customtypes": [
+            "passenger"
+          ]
         }
       }
     }
