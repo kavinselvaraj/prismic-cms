@@ -208,9 +208,16 @@ export function createFieldId(pathKey: string) {
 function getTabName(modelId: string, pathKey: string) {
   const pathParts = pathKey.split(".");
   const firstPart = pathParts[0];
+  const secondPart = pathParts[1];
 
-  if (!firstPart || firstPart === modelId) {
+  if (!firstPart) {
     return "Main";
+  }
+
+  if (firstPart === modelId) {
+    return pathParts.length >= 3 && secondPart
+      ? toReadableLabel(secondPart)
+      : "Main";
   }
 
   return pathParts.length > 1 ? toReadableLabel(firstPart) : "Main";

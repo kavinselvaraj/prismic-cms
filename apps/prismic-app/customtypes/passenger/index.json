@@ -6,19 +6,56 @@
   "status": true,
   "json": {
     "Main": {
-      "passenger_passenger_first_name": {
+      "passenger_passenger_from_date": {
+        "type": "Text",
+        "config": {
+          "label": "From Date"
+        }
+      },
+      "passenger_passenger_to_date": {
+        "type": "Text",
+        "config": {
+          "label": "To Date"
+        }
+      },
+      "passenger_passenger_thai_route": {
+        "type": "Group",
+        "config": {
+          "label": "Thai Route",
+          "repeat": true,
+          "fields": {
+            "code": {
+              "type": "Text",
+              "config": {
+                "label": "Code"
+              }
+            },
+            "name": {
+              "type": "Text",
+              "config": {
+                "label": "Name"
+              }
+            }
+          }
+        }
+      }
+    },
+    "Personal Info": {
+      "passenger_passenger_personal_info_first_name": {
         "type": "Text",
         "config": {
           "label": "First Name"
         }
       },
-      "passenger_passenger_last_name": {
+      "passenger_passenger_personal_info_last_name": {
         "type": "Text",
         "config": {
           "label": "Last Name"
         }
-      },
-      "passenger_passenger_us_route": {
+      }
+    },
+    "Travel Info": {
+      "passenger_passenger_travel_info_us_route": {
         "type": "Group",
         "config": {
           "label": "Us Route",
@@ -37,6 +74,14 @@
               }
             }
           }
+        }
+      }
+    },
+    "Documents": {
+      "passenger_passenger_documents_passport_number": {
+        "type": "Text",
+        "config": {
+          "label": "Passport Number"
         }
       }
     }

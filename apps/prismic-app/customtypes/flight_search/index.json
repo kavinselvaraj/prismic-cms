@@ -6,6 +6,14 @@
   "status": true,
   "json": {
     "Main": {
+      "flight_search_flight_search_ptc": {
+        "type": "Text",
+        "config": {
+          "label": "Ptc"
+        }
+      }
+    },
+    "Airport": {
       "flight_search_flight_search_airport_label": {
         "type": "Text",
         "config": {
@@ -16,12 +24,6 @@
         "type": "Text",
         "config": {
           "label": "Name"
-        }
-      },
-      "flight_search_flight_search_ptc": {
-        "type": "Text",
-        "config": {
-          "label": "Ptc"
         }
       }
     }

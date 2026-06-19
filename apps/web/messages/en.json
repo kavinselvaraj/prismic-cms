@@ -11,13 +11,28 @@
     "to_date": "Return date"
   },
   "passenger": {
-    "first_name": "First name",
-    "last_name": "Last name",
-    "us_route": [
+    "from_date": "Departure date",
+    "to_date": "Return date",
+    "thai_route": [
       {
         "code": "NRT",
         "name": "Narita Airport"
       }
-    ]
+    ],
+    "personal_info": {
+      "first_name": "First name",
+      "last_name": "Last name"
+    },
+    "travel_info": {
+      "us_route": [
+        {
+          "code": "NRT",
+          "name": "Narita Airport"
+        }
+      ]
+    },
+    "documents": {
+      "passport_number": "Passport number"
+    }
   }
 }
