@@ -1,0 +1,13 @@
+{
+  "flight_search": {
+    "airport": {
+      "label": "Airport",
+      "name": "Airport"
+    },
+    "ptc": "Passengers"
+  },
+  "flight_select": {
+    "from_date": "Departure date",
+    "to_date": "Return date"
+  }
+}

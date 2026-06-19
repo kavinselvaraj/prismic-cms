@@ -1,12 +1,10 @@
 import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import aboutLabels from "../apps/web/src/content/about/lang/en.json";
-import { aboutSchema } from "../apps/web/src/content/about/about.schema";
-import homeLabels from "../apps/web/src/content/home/lang/en.json";
-import { homeSchema } from "../apps/web/src/content/home/home.schema";
-import sharedLabels from "../apps/web/src/content/shared/lang/en.json";
-import { sharedSchema } from "../apps/web/src/content/shared/shared.schema";
+import {
+  getFlightSearchDocument,
+  getFlightSelectDocument,
+} from "../apps/web/src/i18n/documents";
 
 type LabelDocument = Record<string, unknown> & {
   modelId: string;
@@ -29,15 +27,14 @@ type PrismicModel = {
   repeatable: false;
   status: true;
   json: {
-    Main: Record<string, PrismicField>;
+    [tabName: string]: Record<string, PrismicField>;
   };
 };
 
 const outputRoot = path.resolve("apps/prismic-app/customtypes");
 const documents = [
-  homeSchema.parse(homeLabels),
-  aboutSchema.parse(aboutLabels),
-  sharedSchema.parse(sharedLabels),
+  getFlightSearchDocument("en"),
+  getFlightSelectDocument("en"),
 ] satisfies LabelDocument[];
 
 if (isMainModule()) {
@@ -56,10 +53,10 @@ if (isMainModule()) {
 }
 
 export function createPrismicModel(document: LabelDocument): PrismicModel {
-  const fields = flattenLabelDocument(document);
+  const tabs = createPrismicTabs(document);
 
   if (document.modelType === "page") {
-    fields.uid = {
+    tabs.Main.uid = {
       type: "UID",
       config: {
         label: "UID",
@@ -74,24 +71,30 @@ export function createPrismicModel(document: LabelDocument): PrismicModel {
     repeatable: false,
     status: true,
     json: {
-      Main: fields,
+      ...tabs,
     },
   };
 }
 
-function flattenLabelDocument(document: LabelDocument) {
-  const fields: Record<string, PrismicField> = {};
+function createPrismicTabs(document: LabelDocument) {
+  const tabs: Record<string, Record<string, PrismicField>> = {
+    Main: {},
+  };
+  const contentRoot = getContentRoot(document);
 
-  for (const [pathKey, value] of flattenObject(document)) {
-    if (isMetadataPath(pathKey)) {
-      continue;
+  for (const [pathKey, value] of flattenObject(contentRoot)) {
+    const tabName = getTabName(pathKey);
+
+    if (!tabs[tabName]) {
+      tabs[tabName] = {};
     }
 
-    const fieldId = createFieldId(pathKey);
-    fields[fieldId] = createField(pathKey, value);
+    const fullPathKey = `${document.modelId}.${pathKey}`;
+    const fieldId = createFieldId(fullPathKey);
+    tabs[tabName][fieldId] = createField(pathKey, value);
   }
 
-  return fields;
+  return tabs;
 }
 
 function flattenObject(
@@ -108,7 +111,7 @@ function flattenObject(
 }
 
 function createField(pathKey: string, value: unknown): PrismicField {
-  const label = toReadableLabel(createFieldId(pathKey));
+  const label = toReadableLabel(pathKey.split(".").at(-1) ?? pathKey);
   const normalizedPath = pathKey.toLowerCase();
   const pathParts = normalizedPath.split(".");
   const fieldName = pathParts[pathParts.length - 1] ?? normalizedPath;
@@ -146,10 +149,27 @@ function createField(pathKey: string, value: unknown): PrismicField {
 
 export function createFieldId(pathKey: string) {
   return pathKey
-    .replace(/^sections\./, "")
     .replace(/\./g, "_")
     .replace(/([a-z0-9])([A-Z])/g, "$1_$2")
     .toLowerCase();
+}
+
+function getContentRoot(document: LabelDocument) {
+  const rootEntry = Object.entries(document).find(
+    ([key, value]) => !isMetadataPath(key) && value && typeof value === "object",
+  );
+
+  if (!rootEntry) {
+    return {};
+  }
+
+  return rootEntry[1];
+}
+
+function getTabName(pathKey: string) {
+  const pathParts = pathKey.split(".");
+
+  return pathParts.length > 1 ? toReadableLabel(pathParts[0] ?? "Main") : "Main";
 }
 
 function isMetadataPath(pathKey: string) {

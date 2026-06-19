@@ -1,0 +1,13 @@
+{
+  "flight_search": {
+    "airport": {
+      "label": "空港",
+      "name": "空港名"
+    },
+    "ptc": "搭乗者数"
+  },
+  "flight_select": {
+    "from_date": "出発日",
+    "to_date": "帰着日"
+  }
+}

@@ -1,11 +1,10 @@
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
-import aboutLabels from "../apps/web/src/content/about/lang/en.json";
-import { aboutSchema } from "../apps/web/src/content/about/about.schema";
-import homeLabels from "../apps/web/src/content/home/lang/en.json";
-import { homeSchema } from "../apps/web/src/content/home/home.schema";
-import sharedLabels from "../apps/web/src/content/shared/lang/en.json";
-import { sharedSchema } from "../apps/web/src/content/shared/shared.schema";
+import {
+  getFlightSearchDocument,
+  getFlightSelectDocument,
+} from "../apps/web/src/i18n/documents";
+import type { AppLocale } from "../apps/web/src/i18n/routing";
 import { createFieldId, createPrismicModel } from "./generate-prismic-models";
 
 type LabelDocument = Record<string, unknown> & {
@@ -30,18 +29,18 @@ type SeedOperation = {
   uid?: string;
   title: string;
   fieldCount: number;
+  documentId?: string;
 };
 
-const locale = readArgValue("--locale") ?? "en";
+const locale = (readArgValue("--locale") ?? "en") as AppLocale;
 const shouldWrite = process.argv.includes("--write");
 const prismicLocale = toPrismicLocale(locale);
 
 loadEnvFiles();
 
 const documents = [
-  homeSchema.parse(homeLabels),
-  aboutSchema.parse(aboutLabels),
-  sharedSchema.parse(sharedLabels),
+  getFlightSearchDocument(locale),
+  getFlightSelectDocument(locale),
 ] satisfies LabelDocument[];
 
 main().catch((error) => {
@@ -79,13 +78,15 @@ async function seedContent() {
   for (const document of documents) {
     const title = createDocumentTitle(document);
     const data = createPrismicDocumentData(document);
+    const manualDocumentId = getDocumentIdOverride(document.modelId, locale);
     const existingDocument = await findExistingDocument(readClient, document);
     const operation: SeedOperation = {
-      action: existingDocument ? "update" : "create",
+      action: existingDocument || manualDocumentId ? "update" : "create",
       modelId: document.modelId,
       uid: document.uid,
       title,
       fieldCount: Object.keys(data).length,
+      documentId: manualDocumentId ?? existingDocument?.id,
     };
 
     operations.push(operation);
@@ -119,6 +120,32 @@ async function seedContent() {
 
   if (shouldWrite) {
     const writeClient = createPrismicWriteClient();
+
+    for (const document of documents) {
+      const documentId = getDocumentIdOverride(document.modelId, locale);
+
+      if (!documentId) {
+        continue;
+      }
+
+      const title = createDocumentTitle(document);
+      const data = createPrismicDocumentData(document);
+
+      await writeClient.updateDocument(documentId, {
+        documentTitle: title,
+        uid: document.uid,
+        tags: [],
+        data,
+      });
+    }
+
+    const hasCreateOrLookupUpdates = operations.some(
+      (operation) => !getDocumentIdOverride(operation.modelId, locale),
+    );
+
+    if (!hasCreateOrLookupUpdates) {
+      return operations;
+    }
 
     await writeClient.migrate(migration, {
       reporter: (event) => {
@@ -197,7 +224,17 @@ async function findExistingDocument(
 
 function createPrismicDocumentData(document: LabelDocument) {
   const model = createPrismicModel(document);
-  const fields = model.json.Main;
+  const fields = Object.values(model.json).reduce<
+    Record<
+      string,
+      {
+        type: string;
+        config?: {
+          single?: string;
+        };
+      }
+    >
+  >((accumulator, tabFields) => ({ ...accumulator, ...tabFields }), {});
   const data: Record<string, unknown> = {};
 
   for (const [pathKey, value] of flattenObject(document)) {
@@ -344,4 +381,17 @@ function loadEnvFiles() {
       }
     }
   }
+}
+
+function getDocumentIdOverride(modelId: string, locale: AppLocale) {
+  const key = [
+    "PRISMIC",
+    modelId.toUpperCase(),
+    locale.toUpperCase(),
+    "DOCUMENT_ID",
+  ].join("_");
+
+  const value = process.env[key];
+
+  return value?.trim() ? value.trim() : undefined;
 }

@@ -1,0 +1,31 @@
+{
+  "id": "flight_search",
+  "label": "Flight Search",
+  "format": "custom",
+  "repeatable": false,
+  "status": true,
+  "json": {
+    "Main": {
+      "flight_search_ptc": {
+        "type": "Text",
+        "config": {
+          "label": "Ptc"
+        }
+      }
+    },
+    "Airport": {
+      "flight_search_airport_label": {
+        "type": "Text",
+        "config": {
+          "label": "Label"
+        }
+      },
+      "flight_search_airport_name": {
+        "type": "Text",
+        "config": {
+          "label": "Name"
+        }
+      }
+    }
+  }
+}

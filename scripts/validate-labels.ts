@@ -1,11 +1,9 @@
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
-import aboutLabels from "../apps/web/src/content/about/lang/en.json";
-import { aboutSchema } from "../apps/web/src/content/about/about.schema";
-import homeLabels from "../apps/web/src/content/home/lang/en.json";
-import { homeSchema } from "../apps/web/src/content/home/home.schema";
-import sharedLabels from "../apps/web/src/content/shared/lang/en.json";
-import { sharedSchema } from "../apps/web/src/content/shared/shared.schema";
+import {
+  getFlightSearchDocument,
+  getFlightSelectDocument,
+} from "../apps/web/src/i18n/documents";
 import { createFieldId, createPrismicModel } from "./generate-prismic-models";
 
 type LabelDocument = Record<string, unknown> & {
@@ -14,9 +12,8 @@ type LabelDocument = Record<string, unknown> & {
 };
 
 const documents = [
-  homeSchema.parse(homeLabels),
-  aboutSchema.parse(aboutLabels),
-  sharedSchema.parse(sharedLabels),
+  getFlightSearchDocument("en"),
+  getFlightSelectDocument("en"),
 ] satisfies LabelDocument[];
 
 const errors: string[] = [];
@@ -51,8 +48,12 @@ function validateGeneratedModel(document: LabelDocument) {
     typeof createPrismicModel
   >;
   const expected = createPrismicModel(document);
-  const generatedFields = Object.keys(generated.json.Main);
-  const expectedFields = Object.keys(expected.json.Main);
+  const generatedFields = Object.values(generated.json).flatMap((tab) =>
+    Object.keys(tab),
+  );
+  const expectedFields = Object.values(expected.json).flatMap((tab) =>
+    Object.keys(tab),
+  );
 
   for (const fieldId of expectedFields) {
     if (!generatedFields.includes(fieldId)) {
@@ -89,9 +90,9 @@ function validateFigmaMappings() {
   }>;
   const knownFields = new Set(
     documents.flatMap((document) =>
-      flattenObject(document)
-        .filter(([pathKey]) => !["page", "modelId", "modelType", "uid"].includes(pathKey))
-        .map(([pathKey]) => `${document.modelId}:${createFieldId(pathKey)}`),
+      Object.values(createPrismicModel(document).json).flatMap((tab) =>
+        Object.keys(tab).map((fieldId) => `${document.modelId}:${fieldId}`),
+      ),
     ),
   );
 

@@ -1,7 +1,9 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
-import aboutLabels from "../apps/web/src/content/about/lang/en.json";
-import homeLabels from "../apps/web/src/content/home/lang/en.json";
+import {
+  getFlightSearchDocument,
+  getFlightSelectDocument,
+} from "../apps/web/src/i18n/documents";
 import { createFieldId } from "./generate-prismic-models";
 
 type FigmaMapping = {
@@ -16,8 +18,8 @@ type FigmaMapping = {
 const outputPath = path.resolve("prismic/figma-label-map.json");
 const existingMappings = readExistingMappings();
 const generatedMappings = [
-  ...createMappings("Home", homeLabels),
-  ...createMappings("About", aboutLabels),
+  ...createMappings("Flight Search", getFlightSearchDocument("en")),
+  ...createMappings("Flight Select", getFlightSelectDocument("en")),
 ];
 const mergedMappings = mergeMappings(existingMappings, generatedMappings);
 
@@ -58,6 +60,9 @@ function readExistingMappings(): FigmaMapping[] {
 }
 
 function mergeMappings(existing: FigmaMapping[], generated: FigmaMapping[]) {
+  const generatedKeys = new Set(
+    generated.map((mapping) => `${mapping.modelId}:${mapping.labelKey}`),
+  );
   const mappings = new Map<string, FigmaMapping>();
 
   for (const mapping of generated) {
@@ -65,6 +70,10 @@ function mergeMappings(existing: FigmaMapping[], generated: FigmaMapping[]) {
   }
 
   for (const mapping of existing) {
+    if (!generatedKeys.has(`${mapping.modelId}:${mapping.labelKey}`)) {
+      continue;
+    }
+
     mappings.set(`${mapping.modelId}:${mapping.labelKey}`, mapping);
   }
 
