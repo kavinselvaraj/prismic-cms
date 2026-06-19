@@ -70,6 +70,117 @@ type ContentRelationshipFieldWithData<
 }[Exclude<TCustomType[number], string>["id"]];
 
 /**
+ * Item in *Flight Search → Airport*
+ */
+export interface FlightSearchDocumentDataAirportItem {
+  /**
+   * name field in *Flight Search → Airport*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: flight_search.airport[].name
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  name: prismic.KeyTextField;
+
+  /**
+   * code field in *Flight Search → Airport*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: flight_search.airport[].code
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  code: prismic.KeyTextField;
+}
+
+/**
+ * Content for Flight Search documents
+ */
+interface FlightSearchDocumentData {
+  /**
+   * Ptc field in *Flight Search*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: flight_search.flight_search_ptc
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  flight_search_ptc: prismic.KeyTextField; /**
+   * Airport field in *Flight Search*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: flight_search.airport[]
+   * - **Tab**: Airport
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  airport: prismic.GroupField<Simplify<FlightSearchDocumentDataAirportItem>>;
+}
+
+/**
+ * Flight Search document from Prismic
+ *
+ * - **API ID**: `flight_search`
+ * - **Repeatable**: `false`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type FlightSearchDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithoutUID<
+    Simplify<FlightSearchDocumentData>,
+    "flight_search",
+    Lang
+  >;
+
+/**
+ * Content for Flight Select documents
+ */
+interface FlightSelectDocumentData {
+  /**
+   * From Date field in *Flight Select*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: flight_select.flight_select_from_date
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  flight_select_from_date: prismic.KeyTextField;
+
+  /**
+   * To Date field in *Flight Select*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: flight_select.flight_select_to_date
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  flight_select_to_date: prismic.KeyTextField;
+}
+
+/**
+ * Flight Select document from Prismic
+ *
+ * - **API ID**: `flight_select`
+ * - **Repeatable**: `false`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type FlightSelectDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithoutUID<
+    Simplify<FlightSelectDocumentData>,
+    "flight_select",
+    Lang
+  >;
+
+export type AllDocumentTypes = FlightSearchDocument | FlightSelectDocument;
+
+/**
  * Primary content in *HeroSection → Default → Primary*
  */
 export interface HeroSectionSliceDefaultPrimary {
@@ -259,22 +370,28 @@ declare module "@prismicio/client" {
     (
       repositoryNameOrEndpoint: string,
       options?: prismic.ClientConfig,
-    ): prismic.Client;
+    ): prismic.Client<AllDocumentTypes>;
   }
 
   interface CreateWriteClient {
     (
       repositoryNameOrEndpoint: string,
-      options?: prismic.WriteClientConfig,
-    ): prismic.WriteClient;
+      options: prismic.WriteClientConfig,
+    ): prismic.WriteClient<AllDocumentTypes>;
   }
 
   interface CreateMigration {
-    (): prismic.Migration;
+    (): prismic.Migration<AllDocumentTypes>;
   }
 
   namespace Content {
     export type {
+      FlightSearchDocument,
+      FlightSearchDocumentData,
+      FlightSearchDocumentDataAirportItem,
+      FlightSelectDocument,
+      FlightSelectDocumentData,
+      AllDocumentTypes,
       HeroSectionSlice,
       HeroSectionSliceDefaultPrimary,
       HeroSectionSliceVariation,

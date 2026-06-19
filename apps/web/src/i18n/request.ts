@@ -4,6 +4,10 @@ import { loadMessages, resolveLocale } from "./load-messages";
 export default getRequestConfig(async ({ requestLocale }) => {
   const locale = await requestLocale;
   const resolvedLocale = resolveLocale(locale);
+  console.log("[i18n] request", {
+    locale,
+    resolvedLocale,
+  });
 
   return {
     locale: resolvedLocale,

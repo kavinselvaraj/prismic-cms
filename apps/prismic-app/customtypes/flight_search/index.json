@@ -14,16 +14,27 @@
       }
     },
     "Airport": {
-      "flight_search_airport_label": {
-        "type": "Text",
+      "airport": {
+        "type": "Group",
         "config": {
-          "label": "Label"
-        }
-      },
-      "flight_search_airport_name": {
-        "type": "Text",
-        "config": {
-          "label": "Name"
+          "label": "Airport",
+          "repeat": true,
+          "fields": {
+            "name": {
+              "type": "Text",
+              "config": {
+                "label": "name",
+                "placeholder": ""
+              }
+            },
+            "code": {
+              "type": "Text",
+              "config": {
+                "label": "code",
+                "placeholder": ""
+              }
+            }
+          }
         }
       }
     }

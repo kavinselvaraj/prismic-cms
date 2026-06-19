@@ -1,7 +1,7 @@
-import { NextIntlClientProvider } from "next-intl";
-import { setRequestLocale } from "next-intl/server";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
+import { LocaleSwitcher } from "@/components/locale-switcher";
 import { routing } from "@/i18n/routing";
 
 type LocaleLayoutProps = {
@@ -21,7 +21,28 @@ export default async function LocaleLayout({
     notFound();
   }
 
-  setRequestLocale(locale);
+  return (
+    <div style={{ padding: "24px" }}>
+      <header
+        style={{
+          alignItems: "center",
+          display: "flex",
+          flexWrap: "wrap",
+          gap: "12px",
+          justifyContent: "space-between",
+          marginBottom: "24px",
+        }}
+      >
+        <nav style={{ display: "flex", gap: "16px" }}>
+          <Link href={`/${locale}`}>Landing</Link>
+          <Link href={`/${locale}/flight-search`}>Flight Search</Link>
+          <Link href={`/${locale}/flight-select`}>Flight Selection</Link>
+        </nav>
 
-  return <NextIntlClientProvider>{children}</NextIntlClientProvider>;
+        <LocaleSwitcher currentLocale={locale as "en" | "ja"} />
+      </header>
+
+      {children}
+    </div>
+  );
 }
