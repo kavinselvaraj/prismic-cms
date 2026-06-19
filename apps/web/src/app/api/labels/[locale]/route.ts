@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
-import { loadMessages, resolveLocale, getServerLabelSource } from "@/i18n/load-messages";
+import {
+  getIbeLabels,
+  getServerLabelSource,
+  resolveLocale,
+} from "@/ibe/services/label-service";
 
 type RouteContext = {
   params: Promise<{
@@ -18,7 +22,7 @@ export async function GET(_: Request, context: RouteContext) {
     source,
   });
 
-  const messages = await loadMessages(resolvedLocale);
+  const messages = await getIbeLabels(resolvedLocale);
 
   return NextResponse.json({
     locale: resolvedLocale,

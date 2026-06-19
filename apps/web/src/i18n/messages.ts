@@ -1,3 +1,1 @@
-import localEn from "../../messages/en.json";
-
-export type FlightMessages = typeof localEn;
+export type { IbeLabels as FlightMessages } from "@/ibe/types/label.types";
