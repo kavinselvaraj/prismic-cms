@@ -49,29 +49,155 @@ type ContentRelationshipFieldWithData<
 }[Exclude<TCustomType[number], string>["id"]];
 
 /**
- * Item in *Flight Search → Airport*
+ * Item in *Content Page → FAQ Items*
  */
-export interface FlightSearchDocumentDataAirportItem {
+export interface ContentPageDocumentDataFaqItemsItem {
 	/**
-	 * name field in *Flight Search → Airport*
+	 * Question field in *Content Page → FAQ Items*
 	 *
 	 * - **Field Type**: Text
 	 * - **Placeholder**: *None*
-	 * - **API ID Path**: flight_search.airport[].name
+	 * - **API ID Path**: content_page.faq_items[].question
 	 * - **Documentation**: https://prismic.io/docs/fields/text
 	 */
-	name: prismic.KeyTextField;
+	question: prismic.KeyTextField;
 	
 	/**
-	 * code field in *Flight Search → Airport*
+	 * Answer field in *Content Page → FAQ Items*
+	 *
+	 * - **Field Type**: Rich Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: content_page.faq_items[].answer
+	 * - **Documentation**: https://prismic.io/docs/fields/rich-text
+	 */
+	answer: prismic.RichTextField;
+}
+
+/**
+ * Content for Content Page documents
+ */
+interface ContentPageDocumentData {
+	/**
+	 * Title field in *Content Page*
 	 *
 	 * - **Field Type**: Text
 	 * - **Placeholder**: *None*
-	 * - **API ID Path**: flight_search.airport[].code
+	 * - **API ID Path**: content_page.title
+	 * - **Tab**: Main
 	 * - **Documentation**: https://prismic.io/docs/fields/text
 	 */
-	code: prismic.KeyTextField;
+	title: prismic.KeyTextField;
+	
+	/**
+	 * Description field in *Content Page*
+	 *
+	 * - **Field Type**: Rich Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: content_page.description
+	 * - **Tab**: Main
+	 * - **Documentation**: https://prismic.io/docs/fields/rich-text
+	 */
+	description: prismic.RichTextField;
+	
+	/**
+	 * Eyebrow field in *Content Page*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: content_page.eyebrow
+	 * - **Tab**: Main
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	eyebrow: prismic.KeyTextField;
+	
+	/**
+	 * Breadcrumb Level 1 Label field in *Content Page*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: content_page.breadcrumb_level_1_label
+	 * - **Tab**: Main
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	breadcrumb_level_1_label: prismic.KeyTextField;
+	
+	/**
+	 * Breadcrumb Level 1 Href field in *Content Page*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: content_page.breadcrumb_level_1_href
+	 * - **Tab**: Main
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	breadcrumb_level_1_href: prismic.KeyTextField;
+	
+	/**
+	 * Breadcrumb Level 2 Label field in *Content Page*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: content_page.breadcrumb_level_2_label
+	 * - **Tab**: Main
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	breadcrumb_level_2_label: prismic.KeyTextField;
+	
+	/**
+	 * Breadcrumb Level 2 Href field in *Content Page*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: content_page.breadcrumb_level_2_href
+	 * - **Tab**: Main
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	breadcrumb_level_2_href: prismic.KeyTextField;
+	
+	/**
+	 * Breadcrumb Level 3 Label field in *Content Page*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: content_page.breadcrumb_level_3_label
+	 * - **Tab**: Main
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	breadcrumb_level_3_label: prismic.KeyTextField;
+	
+	/**
+	 * Breadcrumb Level 3 Href field in *Content Page*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: content_page.breadcrumb_level_3_href
+	 * - **Tab**: Main
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	breadcrumb_level_3_href: prismic.KeyTextField;
+	
+	/**
+	 * FAQ Items field in *Content Page*
+	 *
+	 * - **Field Type**: Group
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: content_page.faq_items[]
+	 * - **Tab**: Main
+	 * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+	 */
+	faq_items: prismic.GroupField<Simplify<ContentPageDocumentDataFaqItemsItem>>;
 }
+
+/**
+ * Content Page document from Prismic
+ *
+ * - **API ID**: `content_page`
+ * - **Repeatable**: `true`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type ContentPageDocument<Lang extends string = string> = prismic.PrismicDocumentWithUID<Simplify<ContentPageDocumentData>, "content_page", Lang>;
 
 /**
  * Content for Flight Search documents
@@ -82,20 +208,31 @@ interface FlightSearchDocumentData {
 	 *
 	 * - **Field Type**: Text
 	 * - **Placeholder**: *None*
-	 * - **API ID Path**: flight_search.flight_search_ptc
+	 * - **API ID Path**: flight_search.flight_search_flight_search_ptc
 	 * - **Tab**: Main
 	 * - **Documentation**: https://prismic.io/docs/fields/text
 	 */
-	flight_search_ptc: prismic.KeyTextField;/**
-	 * Airport field in *Flight Search*
+	flight_search_flight_search_ptc: prismic.KeyTextField;/**
+	 * Label field in *Flight Search*
 	 *
-	 * - **Field Type**: Group
+	 * - **Field Type**: Text
 	 * - **Placeholder**: *None*
-	 * - **API ID Path**: flight_search.airport[]
+	 * - **API ID Path**: flight_search.flight_search_flight_search_airport_label
 	 * - **Tab**: Airport
-	 * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+	 * - **Documentation**: https://prismic.io/docs/fields/text
 	 */
-	airport: prismic.GroupField<Simplify<FlightSearchDocumentDataAirportItem>>;
+	flight_search_flight_search_airport_label: prismic.KeyTextField;
+	
+	/**
+	 * Name field in *Flight Search*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: flight_search.flight_search_flight_search_airport_name
+	 * - **Tab**: Airport
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	flight_search_flight_search_airport_name: prismic.KeyTextField;
 }
 
 /**
@@ -118,22 +255,22 @@ interface FlightSelectDocumentData {
 	 *
 	 * - **Field Type**: Text
 	 * - **Placeholder**: *None*
-	 * - **API ID Path**: flight_select.flight_select_from_date
+	 * - **API ID Path**: flight_select.flight_select_flight_select_from_date
 	 * - **Tab**: Main
 	 * - **Documentation**: https://prismic.io/docs/fields/text
 	 */
-	flight_select_from_date: prismic.KeyTextField;
+	flight_select_flight_select_from_date: prismic.KeyTextField;
 	
 	/**
 	 * To Date field in *Flight Select*
 	 *
 	 * - **Field Type**: Text
 	 * - **Placeholder**: *None*
-	 * - **API ID Path**: flight_select.flight_select_to_date
+	 * - **API ID Path**: flight_select.flight_select_flight_select_to_date
 	 * - **Tab**: Main
 	 * - **Documentation**: https://prismic.io/docs/fields/text
 	 */
-	flight_select_to_date: prismic.KeyTextField;
+	flight_select_flight_select_to_date: prismic.KeyTextField;
 }
 
 /**
@@ -172,6 +309,17 @@ interface IbeDocumentData {
 	 * - **Documentation**: https://prismic.io/docs/fields/content-relationship
 	 */
 	flight_select: prismic.ContentRelationshipField<"flight_select">;
+	
+	/**
+	 * Passenger field in *IBE*
+	 *
+	 * - **Field Type**: Content Relationship
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: ibe.passenger
+	 * - **Tab**: Main
+	 * - **Documentation**: https://prismic.io/docs/fields/content-relationship
+	 */
+	passenger: prismic.ContentRelationshipField<"passenger">;
 }
 
 /**
@@ -185,7 +333,210 @@ interface IbeDocumentData {
  */
 export type IbeDocument<Lang extends string = string> = prismic.PrismicDocumentWithoutUID<Simplify<IbeDocumentData>, "ibe", Lang>;
 
-export type AllDocumentTypes = FlightSearchDocument | FlightSelectDocument | IbeDocument;
+/**
+ * Item in *Passenger → Us Route*
+ */
+export interface PassengerDocumentDataPassengerPassengerTravelInfoUsRouteItem {
+	/**
+	 * Code field in *Passenger → Us Route*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: passenger.passenger_passenger_travel_info_us_route[].code
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	code: prismic.KeyTextField;
+	
+	/**
+	 * Name field in *Passenger → Us Route*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: passenger.passenger_passenger_travel_info_us_route[].name
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	name: prismic.KeyTextField;
+}
+
+/**
+ * Item in *Passenger → Asia Route*
+ */
+export interface PassengerDocumentDataPassengerPassengerTravelInfoAsiaRouteItem {
+	/**
+	 * Code field in *Passenger → Asia Route*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: passenger.passenger_passenger_travel_info_asia_route[].code
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	code: prismic.KeyTextField;
+	
+	/**
+	 * Name field in *Passenger → Asia Route*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: passenger.passenger_passenger_travel_info_asia_route[].name
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	name: prismic.KeyTextField;
+}
+
+/**
+ * Content for Passenger documents
+ */
+interface PassengerDocumentData {
+	/**
+	 * First Name field in *Passenger*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: passenger.passenger_passenger_personal_info_first_name
+	 * - **Tab**: Personal Info
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	passenger_passenger_personal_info_first_name: prismic.KeyTextField;
+	
+	/**
+	 * Last Name field in *Passenger*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: passenger.passenger_passenger_personal_info_last_name
+	 * - **Tab**: Personal Info
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	passenger_passenger_personal_info_last_name: prismic.KeyTextField;
+	
+	/**
+	 * Middle Name field in *Passenger*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: passenger.passenger_passenger_personal_info_middle_name
+	 * - **Tab**: Personal Info
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	passenger_passenger_personal_info_middle_name: prismic.KeyTextField;
+	
+	/**
+	 * Date Of Birth field in *Passenger*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: passenger.passenger_passenger_personal_info_date_of_birth
+	 * - **Tab**: Personal Info
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	passenger_passenger_personal_info_date_of_birth: prismic.KeyTextField;/**
+	 * Region Label field in *Passenger*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: passenger.passenger_passenger_travel_info_region_label
+	 * - **Tab**: Travel Info
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	passenger_passenger_travel_info_region_label: prismic.KeyTextField;
+	
+	/**
+	 * Us Route field in *Passenger*
+	 *
+	 * - **Field Type**: Group
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: passenger.passenger_passenger_travel_info_us_route[]
+	 * - **Tab**: Travel Info
+	 * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+	 */
+	passenger_passenger_travel_info_us_route: prismic.GroupField<Simplify<PassengerDocumentDataPassengerPassengerTravelInfoUsRouteItem>>;
+	
+	/**
+	 * Asia Route field in *Passenger*
+	 *
+	 * - **Field Type**: Group
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: passenger.passenger_passenger_travel_info_asia_route[]
+	 * - **Tab**: Travel Info
+	 * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+	 */
+	passenger_passenger_travel_info_asia_route: prismic.GroupField<Simplify<PassengerDocumentDataPassengerPassengerTravelInfoAsiaRouteItem>>;/**
+	 * Passport Number field in *Passenger*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: passenger.passenger_passenger_documents_passport_number
+	 * - **Tab**: Documents
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	passenger_passenger_documents_passport_number: prismic.KeyTextField;
+	
+	/**
+	 * Passport Expiry field in *Passenger*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: passenger.passenger_passenger_documents_passport_expiry
+	 * - **Tab**: Documents
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	passenger_passenger_documents_passport_expiry: prismic.KeyTextField;
+	
+	/**
+	 * Nationality field in *Passenger*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: passenger.passenger_passenger_documents_nationality
+	 * - **Tab**: Documents
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	passenger_passenger_documents_nationality: prismic.KeyTextField;/**
+	 * Meal Preference field in *Passenger*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: passenger.passenger_passenger_preferences_meal_preference
+	 * - **Tab**: Preferences
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	passenger_passenger_preferences_meal_preference: prismic.KeyTextField;
+	
+	/**
+	 * Seat Preference field in *Passenger*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: passenger.passenger_passenger_preferences_seat_preference
+	 * - **Tab**: Preferences
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	passenger_passenger_preferences_seat_preference: prismic.KeyTextField;
+	
+	/**
+	 * Special Assistance field in *Passenger*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: passenger.passenger_passenger_preferences_special_assistance
+	 * - **Tab**: Preferences
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	passenger_passenger_preferences_special_assistance: prismic.KeyTextField;
+}
+
+/**
+ * Passenger document from Prismic
+ *
+ * - **API ID**: `passenger`
+ * - **Repeatable**: `false`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type PassengerDocument<Lang extends string = string> = prismic.PrismicDocumentWithoutUID<Simplify<PassengerDocumentData>, "passenger", Lang>;
+
+export type AllDocumentTypes = ContentPageDocument | FlightSearchDocument | FlightSelectDocument | IbeDocument | PassengerDocument;
 
 /**
  * Primary content in *HeroSection → Default → Primary*
@@ -389,13 +740,19 @@ declare module "@prismicio/client" {
 	
 	namespace Content {
 		export type {
+			ContentPageDocument,
+			ContentPageDocumentData,
+			ContentPageDocumentDataFaqItemsItem,
 			FlightSearchDocument,
 			FlightSearchDocumentData,
-			FlightSearchDocumentDataAirportItem,
 			FlightSelectDocument,
 			FlightSelectDocumentData,
 			IbeDocument,
 			IbeDocumentData,
+			PassengerDocument,
+			PassengerDocumentData,
+			PassengerDocumentDataPassengerPassengerTravelInfoUsRouteItem,
+			PassengerDocumentDataPassengerPassengerTravelInfoAsiaRouteItem,
 			AllDocumentTypes,
 			HeroSectionSlice,
 			HeroSectionSliceDefaultPrimary,

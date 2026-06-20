@@ -15,10 +15,12 @@
     "typecheck": "tsc --noEmit"
   },
   "peerDependencies": {
+    "next": "^15.5.19",
     "react": "^19.1.0"
   },
   "dependencies": {
-    "@prismicio/client": "^7.16.0"
+    "@prismicio/client": "^7.16.0",
+    "@prismicio/react": "^2.9.1"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",

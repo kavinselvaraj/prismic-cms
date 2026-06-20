@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@prismicio/client": "^7.16.0",
+    "@prismicio/react": "^2.9.2",
     "@repo/cms": "workspace:*",
     "next": "^15.5.19",
     "next-intl": "^4.0.0",
@@ -18,9 +19,12 @@
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
+    "@tailwindcss/postcss": "^4.3.1",
     "@types/node": "^22.15.29",
     "@types/react": "^19.1.6",
     "@types/react-dom": "^19.1.5",
+    "postcss": "^8.5.15",
+    "tailwindcss": "^4.3.1",
     "typescript": "^5.9.3"
   }
 }
