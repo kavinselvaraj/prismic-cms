@@ -50,7 +50,35 @@
       },
       "slices": {
         "type": "Slices",
-        "fieldset": "Slice Zone"
+        "fieldset": "Slice Zone",
+        "config": {
+          "choices": {
+            "cta_banner": {
+              "type": "SharedSlice"
+            },
+            "page_header": {
+              "type": "SharedSlice"
+            },
+            "faq_question_list": {
+              "type": "SharedSlice"
+            },
+            "popular_routes": {
+              "type": "SharedSlice"
+            },
+            "link_group": {
+              "type": "SharedSlice"
+            },
+            "hero_section": {
+              "type": "SharedSlice"
+            },
+            "rich_text": {
+              "type": "SharedSlice"
+            },
+            "rich_text_section": {
+              "type": "SharedSlice"
+            }
+          }
+        }
       }
     }
   }
