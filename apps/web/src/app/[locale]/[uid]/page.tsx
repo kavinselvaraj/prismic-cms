@@ -1,9 +1,12 @@
 import Link from "next/link";
-import { asText } from "@prismicio/client";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { PrismicRichText } from "@prismicio/react";
-import { getContentPageByUid } from "@repo/cms";
+import { SliceZone } from "@prismicio/react";
+import {
+  getContentPageBreadcrumb,
+  getContentPageDocumentByUid,
+  prismicSliceComponents,
+} from "@repo/cms";
 import type { AppLocale } from "@/i18n/routing";
 
 type PageProps = {
@@ -17,7 +20,7 @@ export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { locale, uid } = await params;
-  const page = await getContentPageByUid({ locale, uid });
+  const page = await getContentPageDocumentByUid({ locale, uid });
 
   if (!page) {
     return {
@@ -25,19 +28,23 @@ export async function generateMetadata({
     };
   }
 
+  const breadcrumb = getContentPageBreadcrumb(page);
+  const fallbackTitle = breadcrumb.at(-1)?.label || page.uid || "Content Page";
+
   return {
-    title: page.title,
-    description: asText(page.description) || undefined,
+    title: fallbackTitle,
   };
 }
 
 export default async function ContentPage({ params }: PageProps) {
   const { locale, uid } = await params;
-  const page = await getContentPageByUid({ locale, uid });
+  const page = await getContentPageDocumentByUid({ locale, uid });
 
   if (!page) {
     notFound();
   }
+
+  const breadcrumb = getContentPageBreadcrumb(page);
 
   return (
     <main className="mx-auto max-w-5xl px-6 py-12">
@@ -65,8 +72,8 @@ export default async function ContentPage({ params }: PageProps) {
               </svg>
             </Link>
           </li>
-          {page.breadcrumb.map((item, index) => {
-            const isLast = index === page.breadcrumb.length - 1;
+          {breadcrumb.map((item, index) => {
+            const isLast = index === breadcrumb.length - 1;
 
             return (
               <li key={`${item.label}-${index}`} className="flex items-center gap-2">
@@ -100,100 +107,14 @@ export default async function ContentPage({ params }: PageProps) {
         </ol>
       </nav>
 
-      <section className="border-b border-slate-200 pb-8">
-        {page.eyebrow ? (
-          <p className="mb-3 text-sm font-semibold uppercase tracking-wide text-teal-700">
-            {page.eyebrow}
-          </p>
-        ) : null}
-        <h1 className="max-w-3xl text-4xl font-semibold text-slate-950">
-          {page.title}
-        </h1>
-        {page.pageKind !== "faq_detail" ? (
-          <div className="prose prose-slate mt-4 max-w-3xl">
-            <PrismicRichText field={page.description} />
-          </div>
-        ) : null}
-      </section>
-
-      {page.pageKind === "faq_landing" ? (
-        <section className="mt-10 border-t border-slate-200 pt-10">
-          <h2 className="mb-6 text-2xl font-medium text-slate-950">
-            About Reservations
-          </h2>
-          <div className="flex flex-wrap gap-x-7 gap-y-5 text-[17px]">
-            {page.categoryLinks.map((item) => (
-              <Link
-                key={`${item.label}-${item.href}`}
-                className="font-medium text-teal-700 underline decoration-teal-300 underline-offset-4 hover:text-teal-800"
-                href={item.href || "#"}
-              >
-                {item.label}
-              </Link>
-            ))}
-          </div>
-        </section>
-      ) : null}
-
-      {page.pageKind === "faq_category" ? (
-        <section className="mt-10 space-y-0 border-t border-slate-200">
-          {page.faqs.map((item) => (
-            <Link
-              key={`${item.question}-${item.href}`}
-              className="flex items-center justify-between border-b border-slate-200 py-7 text-lg text-slate-950 transition hover:text-teal-700"
-              href={item.href || "#"}
-            >
-              <span>{item.question}</span>
-              <span
-                aria-hidden="true"
-                className="text-3xl leading-none text-teal-700"
-              >
-                &#8250;
-              </span>
-            </Link>
-          ))}
-        </section>
-      ) : null}
-
-      {page.pageKind === "faq_detail" ? (
-        <section className="mt-10">
-          <div className="prose prose-slate max-w-3xl text-lg leading-8">
-            <PrismicRichText field={page.description} />
-          </div>
-          {page.detailCtaLabel && page.detailCtaHref ? (
-            <div className="mt-14 flex justify-center">
-              <Link
-                className="inline-flex min-h-16 min-w-[27rem] items-center justify-center rounded-md bg-emerald-700 px-8 text-center text-2xl font-semibold text-white shadow-lg shadow-emerald-200 transition hover:bg-emerald-800"
-                href={page.detailCtaHref}
-              >
-                {page.detailCtaLabel}
-              </Link>
-            </div>
-          ) : null}
-        </section>
-      ) : null}
-
-      {!page.pageKind ? (
-        <section className="mt-10 space-y-4">
-          {page.faqs.map((item, index) => (
-            <details
-              key={`${item.question}-${index}`}
-              className="group rounded-lg border border-slate-200 bg-white p-5 shadow-sm"
-              open={index === 0}
-            >
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-left text-base font-medium text-slate-900">
-                <span>{item.question}</span>
-                <span className="text-xl leading-none text-slate-400 transition group-open:rotate-45">
-                  +
-                </span>
-              </summary>
-              <div className="prose prose-slate mt-4 max-w-3xl text-sm leading-7">
-                <PrismicRichText field={item.answer} />
-              </div>
-            </details>
-          ))}
-        </section>
-      ) : null}
+      <SliceZone
+        components={prismicSliceComponents}
+        slices={
+          ((page.data as { slices?: unknown }).slices as Parameters<
+            typeof SliceZone
+          >[0]["slices"]) ?? []
+        }
+      />
     </main>
   );
 }
