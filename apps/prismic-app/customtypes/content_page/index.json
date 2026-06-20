@@ -12,6 +12,17 @@
           "label": "UID"
         }
       },
+      "page_kind": {
+        "type": "Select",
+        "config": {
+          "label": "Page Kind",
+          "options": [
+            "faq_landing",
+            "faq_category",
+            "faq_detail"
+          ]
+        }
+      },
       "title": {
         "type": "Text",
         "config": {
@@ -67,6 +78,27 @@
           "label": "Breadcrumb Level 3 Href"
         }
       },
+      "category_links": {
+        "type": "Group",
+        "config": {
+          "label": "Category Links",
+          "repeat": true,
+          "fields": {
+            "label": {
+              "type": "Text",
+              "config": {
+                "label": "Label"
+              }
+            },
+            "href": {
+              "type": "Text",
+              "config": {
+                "label": "Href"
+              }
+            }
+          }
+        }
+      },
       "faq_items": {
         "type": "Group",
         "config": {
@@ -85,8 +117,26 @@
                 "label": "Answer",
                 "single": "paragraph,strong,em,hyperlink,list-item,o-list-item"
               }
+            },
+            "href": {
+              "type": "Text",
+              "config": {
+                "label": "Href"
+              }
             }
           }
+        }
+      },
+      "detail_cta_label": {
+        "type": "Text",
+        "config": {
+          "label": "Detail CTA Label"
+        }
+      },
+      "detail_cta_href": {
+        "type": "Text",
+        "config": {
+          "label": "Detail CTA Href"
         }
       }
     }

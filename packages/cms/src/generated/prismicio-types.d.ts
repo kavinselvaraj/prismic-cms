@@ -49,6 +49,31 @@ type ContentRelationshipFieldWithData<
 }[Exclude<TCustomType[number], string>["id"]];
 
 /**
+ * Item in *Content Page → Category Links*
+ */
+export interface ContentPageDocumentDataCategoryLinksItem {
+	/**
+	 * Label field in *Content Page → Category Links*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: content_page.category_links[].label
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	label: prismic.KeyTextField;
+	
+	/**
+	 * Href field in *Content Page → Category Links*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: content_page.category_links[].href
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	href: prismic.KeyTextField;
+}
+
+/**
  * Item in *Content Page → FAQ Items*
  */
 export interface ContentPageDocumentDataFaqItemsItem {
@@ -71,12 +96,33 @@ export interface ContentPageDocumentDataFaqItemsItem {
 	 * - **Documentation**: https://prismic.io/docs/fields/rich-text
 	 */
 	answer: prismic.RichTextField;
+	
+	/**
+	 * Href field in *Content Page → FAQ Items*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: content_page.faq_items[].href
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	href: prismic.KeyTextField;
 }
 
 /**
  * Content for Content Page documents
  */
 interface ContentPageDocumentData {
+	/**
+	 * Page Kind field in *Content Page*
+	 *
+	 * - **Field Type**: Select
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: content_page.page_kind
+	 * - **Tab**: Main
+	 * - **Documentation**: https://prismic.io/docs/fields/select
+	 */
+	page_kind: prismic.SelectField<"faq_landing" | "faq_category" | "faq_detail">;
+	
 	/**
 	 * Title field in *Content Page*
 	 *
@@ -177,6 +223,17 @@ interface ContentPageDocumentData {
 	breadcrumb_level_3_href: prismic.KeyTextField;
 	
 	/**
+	 * Category Links field in *Content Page*
+	 *
+	 * - **Field Type**: Group
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: content_page.category_links[]
+	 * - **Tab**: Main
+	 * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+	 */
+	category_links: prismic.GroupField<Simplify<ContentPageDocumentDataCategoryLinksItem>>;
+	
+	/**
 	 * FAQ Items field in *Content Page*
 	 *
 	 * - **Field Type**: Group
@@ -186,6 +243,28 @@ interface ContentPageDocumentData {
 	 * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
 	 */
 	faq_items: prismic.GroupField<Simplify<ContentPageDocumentDataFaqItemsItem>>;
+	
+	/**
+	 * Detail CTA Label field in *Content Page*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: content_page.detail_cta_label
+	 * - **Tab**: Main
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	detail_cta_label: prismic.KeyTextField;
+	
+	/**
+	 * Detail CTA Href field in *Content Page*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: content_page.detail_cta_href
+	 * - **Tab**: Main
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	detail_cta_href: prismic.KeyTextField;
 }
 
 /**
@@ -742,6 +821,7 @@ declare module "@prismicio/client" {
 		export type {
 			ContentPageDocument,
 			ContentPageDocumentData,
+			ContentPageDocumentDataCategoryLinksItem,
 			ContentPageDocumentDataFaqItemsItem,
 			FlightSearchDocument,
 			FlightSearchDocumentData,

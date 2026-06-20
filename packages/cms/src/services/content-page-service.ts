@@ -12,12 +12,20 @@ export type ContentPageViewModel = {
     href: string;
     label: string;
   }>;
+  categoryLinks: Array<{
+    href: string;
+    label: string;
+  }>;
   description: prismic.RichTextField;
+  detailCtaHref: string;
+  detailCtaLabel: string;
   eyebrow: string;
   faqs: Array<{
     answer: prismic.RichTextField;
+    href: string;
     question: string;
   }>;
+  pageKind: "faq_landing" | "faq_category" | "faq_detail" | "";
   title: string;
   uid: string | null;
 };
@@ -60,12 +68,20 @@ function mapContentPage(document: ContentPageDocument): ContentPageViewModel {
         href: document.data.breadcrumb_level_3_href ?? "",
       },
     ].filter((item) => item.label),
+    categoryLinks: document.data.category_links.map((item) => ({
+      href: item.href ?? "",
+      label: item.label ?? "",
+    })),
     description: document.data.description,
+    detailCtaHref: document.data.detail_cta_href ?? "",
+    detailCtaLabel: document.data.detail_cta_label ?? "",
     eyebrow: document.data.eyebrow ?? "",
     faqs: document.data.faq_items.map((item) => ({
       answer: item.answer,
+      href: item.href ?? "",
       question: item.question ?? "",
     })),
+    pageKind: (document.data.page_kind ?? "") as ContentPageViewModel["pageKind"],
     title: document.data.title ?? "",
     uid: document.uid,
   };
