@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { SliceComponentProps, PrismicRichText } from "@prismicio/react";
 
-export type FaqQuestionListProps = SliceComponentProps;
+export type FaqQuestionListProps = SliceComponentProps<any>;
 
 const FaqQuestionList: FC<FaqQuestionListProps> = ({ slice }) => {
   const primary = (slice.primary ?? {}) as {

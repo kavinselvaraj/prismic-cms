@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { SliceComponentProps, PrismicRichText } from "@prismicio/react";
 
-export type LinkGroupProps = SliceComponentProps;
+export type LinkGroupProps = SliceComponentProps<any>;
 
 const LinkGroup: FC<LinkGroupProps> = ({ slice }) => {
   const primary = (slice.primary ?? {}) as {

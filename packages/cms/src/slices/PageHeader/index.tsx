@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { SliceComponentProps, PrismicRichText } from "@prismicio/react";
 
-export type PageHeaderProps = SliceComponentProps;
+export type PageHeaderProps = SliceComponentProps<any>;
 
 const PageHeader: FC<PageHeaderProps> = ({ slice }) => {
   const primary = (slice.primary ?? {}) as {
