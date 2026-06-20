@@ -3,7 +3,11 @@
 import dynamic from "next/dynamic";
 
 export const components = {
+  cta_banner: dynamic(() => import("./CtaBanner")),
+  faq_question_list: dynamic(() => import("./FaqQuestionList")),
   hero_section: dynamic(() => import("./HeroSection")),
+  link_group: dynamic(() => import("./LinkGroup")),
+  page_header: dynamic(() => import("./PageHeader")),
   popular_routes: dynamic(() => import("./PopularRoutes")),
   rich_text: dynamic(() => import("./RichText")),
   rich_text_section: dynamic(() => import("./RichTextSection")),

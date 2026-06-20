@@ -1,0 +1,18 @@
+[
+  {
+    "__TYPE__": "SharedSliceContent",
+    "variation": "default",
+    "primary": {
+      "body": [
+        {
+          "type": "paragraph",
+          "text": "Return to the question list to continue browsing related topics.",
+          "spans": []
+        }
+      ],
+      "label": "See Related Questions List",
+      "href": "/en/network-and-timetable"
+    },
+    "items": []
+  }
+]

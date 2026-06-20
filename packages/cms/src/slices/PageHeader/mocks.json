@@ -1,0 +1,24 @@
+[
+  {
+    "__TYPE__": "SharedSliceContent",
+    "variation": "default",
+    "primary": {
+      "eyebrow": "FAQ",
+      "title": [
+        {
+          "type": "heading1",
+          "text": "FAQ / Inquiries",
+          "spans": []
+        }
+      ],
+      "description": [
+        {
+          "type": "paragraph",
+          "text": "Find answers to common questions about reservations, payments, and travel documents.",
+          "spans": []
+        }
+      ]
+    },
+    "items": []
+  }
+]

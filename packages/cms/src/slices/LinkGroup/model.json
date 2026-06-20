@@ -1,0 +1,38 @@
+{
+  "id": "link_group",
+  "type": "SharedSlice",
+  "name": "LinkGroup",
+  "description": "Heading with a list of links",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "https://prismic.io/docs/slices",
+      "version": "initial",
+      "description": "Reusable group of related links",
+      "primary": {
+        "heading": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Heading",
+            "single": "heading2,heading3,strong,em"
+          }
+        }
+      },
+      "items": {
+        "label": {
+          "type": "Text",
+          "config": {
+            "label": "Label"
+          }
+        },
+        "href": {
+          "type": "Text",
+          "config": {
+            "label": "Href"
+          }
+        }
+      }
+    }
+  ]
+}

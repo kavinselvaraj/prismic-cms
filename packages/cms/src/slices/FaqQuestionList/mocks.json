@@ -1,0 +1,32 @@
+[
+  {
+    "__TYPE__": "SharedSliceContent",
+    "variation": "default",
+    "primary": {
+      "heading": [
+        {
+          "type": "heading2",
+          "text": "Network and Timetable",
+          "spans": []
+        }
+      ],
+      "description": [
+        {
+          "type": "paragraph",
+          "text": "Select a question to open the detailed answer page.",
+          "spans": []
+        }
+      ]
+    },
+    "items": [
+      {
+        "question": "Where does ZIPAIR fly to?",
+        "href": "/en/where-does-zipair-fly-to"
+      },
+      {
+        "question": "Where can I check the flight status?",
+        "href": "/en/flight-status"
+      }
+    ]
+  }
+]

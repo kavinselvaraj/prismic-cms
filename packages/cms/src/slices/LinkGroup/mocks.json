@@ -1,0 +1,29 @@
+[
+  {
+    "__TYPE__": "SharedSliceContent",
+    "variation": "default",
+    "primary": {
+      "heading": [
+        {
+          "type": "heading2",
+          "text": "About Reservations",
+          "spans": []
+        }
+      ]
+    },
+    "items": [
+      {
+        "label": "Network and Timetable",
+        "href": "/en/network-and-timetable"
+      },
+      {
+        "label": "Booking",
+        "href": "/en/booking"
+      },
+      {
+        "label": "Payment",
+        "href": "/en/payment"
+      }
+    ]
+  }
+]

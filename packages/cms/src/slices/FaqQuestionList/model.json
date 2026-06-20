@@ -1,0 +1,45 @@
+{
+  "id": "faq_question_list",
+  "type": "SharedSlice",
+  "name": "FaqQuestionList",
+  "description": "Question list with links to detail pages",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "https://prismic.io/docs/slices",
+      "version": "initial",
+      "description": "Category page list of FAQ questions",
+      "primary": {
+        "heading": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Heading",
+            "single": "heading2,heading3,strong,em"
+          }
+        },
+        "description": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Description",
+            "multi": "paragraph,strong,em,hyperlink"
+          }
+        }
+      },
+      "items": {
+        "question": {
+          "type": "Text",
+          "config": {
+            "label": "Question"
+          }
+        },
+        "href": {
+          "type": "Text",
+          "config": {
+            "label": "Href"
+          }
+        }
+      }
+    }
+  ]
+}
