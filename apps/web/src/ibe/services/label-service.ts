@@ -20,15 +20,11 @@ const prismicLocaleMap: Record<AppLocale, string> = {
 };
 
 const LABEL_CACHE_REVALIDATE_SECONDS = 60 * 15;
-
-const getCachedPrismicLabels = unstable_cache(
-  async (locale: AppLocale) => fetchPrismicLabels(locale),
-  ["ibe-labels"],
-  {
-    revalidate: LABEL_CACHE_REVALIDATE_SECONDS,
-    tags: ["ibe-labels"],
-  },
-);
+export const LABEL_CACHE_TAG = "ibe-labels";
+const cachedPrismicLabelLoaders = new Map<
+  AppLocale,
+  () => Promise<FlightMessages>
+>();
 
 export async function getIbeLabels(locale: AppLocale): Promise<FlightMessages> {
   const source = getServerLabelSource();
@@ -64,7 +60,7 @@ async function getIbeLabelsFromPrismic(
   locale: AppLocale,
 ): Promise<FlightMessages> {
   try {
-    return await getCachedPrismicLabels(locale);
+    return await getCachedPrismicLabels(locale)();
   } catch (error) {
     console.warn("[label-service] PRISMIC LABEL LOAD FAILED, falling back to local", {
       locale,
@@ -153,6 +149,31 @@ async function fetchPrismicLabels(locale: AppLocale): Promise<FlightMessages> {
   });
 
   return labels;
+}
+
+export function getLabelCacheTag(locale: AppLocale) {
+  return `${LABEL_CACHE_TAG}:${locale}`;
+}
+
+function getCachedPrismicLabels(locale: AppLocale) {
+  const cachedLoader = cachedPrismicLabelLoaders.get(locale);
+
+  if (cachedLoader) {
+    return cachedLoader;
+  }
+
+  const loader = unstable_cache(
+    async () => fetchPrismicLabels(locale),
+    [LABEL_CACHE_TAG, locale],
+    {
+      revalidate: LABEL_CACHE_REVALIDATE_SECONDS,
+      tags: [LABEL_CACHE_TAG, getLabelCacheTag(locale)],
+    },
+  );
+
+  cachedPrismicLabelLoaders.set(locale, loader);
+
+  return loader;
 }
 
 function isPrismicDocumentLink(
