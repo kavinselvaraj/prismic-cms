@@ -30,9 +30,10 @@ export function useLabelMessages(locale: AppLocale) {
     async function load() {
       try {
         const cachedValue = window.localStorage.getItem(storageKey);
+        let cachedResponse: LabelsApiResponse | null = null;
 
         if (cachedValue) {
-          const cachedResponse = JSON.parse(cachedValue) as LabelsApiResponse;
+          cachedResponse = JSON.parse(cachedValue) as LabelsApiResponse;
           console.log("[labels-cache] localStorage HIT", {
             locale,
             source: cachedResponse.source,
@@ -46,14 +47,13 @@ export function useLabelMessages(locale: AppLocale) {
               messages: cachedResponse.messages,
             });
           }
-
-          return;
+        } else {
+          console.log("[labels-cache] localStorage MISS", {
+            locale,
+            storageKey,
+          });
         }
 
-        console.log("[labels-cache] localStorage MISS", {
-          locale,
-          storageKey,
-        });
         console.log("[labels-cache] FETCH /api/labels", {
           locale,
         });
@@ -67,10 +67,13 @@ export function useLabelMessages(locale: AppLocale) {
         }
 
         const payload = (await response.json()) as LabelsApiResponse;
+        const hasLabelChanges =
+          JSON.stringify(cachedResponse?.messages) !== JSON.stringify(payload.messages);
 
         console.log("[labels-cache] API RESPONSE", {
           locale,
           source: payload.source,
+          hasLabelChanges,
         });
 
         window.localStorage.setItem(storageKey, JSON.stringify(payload));
@@ -81,7 +84,7 @@ export function useLabelMessages(locale: AppLocale) {
           storageKey,
         });
 
-        if (isActive) {
+        if (isActive && (!cachedResponse || hasLabelChanges)) {
           setState({
             error: null,
             isLoading: false,
