@@ -3,8 +3,8 @@ server:
 
 app:
   prismic:
-    repository-name: ${PRISMIC_REPOSITORY_NAME:next-js-ssr}
-    access-token: ${PRISMIC_ACCESS_TOKEN:MC5hYkpDSVJJQUFDTUFzaVJJ.77-977-9PBrvv73vv70b77-9c17vv73vv70PO--_ve-_ve-_ve-_vXvvv70977-9eu-_ve-_ve-_vV0xegUcAw}
+    repository-name: ${PRISMIC_REPOSITORY_NAME:}
+    access-token: ${PRISMIC_ACCESS_TOKEN:}
     cache-ttl-seconds: ${PRISMIC_JAVA_CACHE_TTL_SECONDS:300}
     label-document-types:
       - flight_search

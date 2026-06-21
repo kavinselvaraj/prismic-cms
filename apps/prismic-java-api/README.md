@@ -42,17 +42,48 @@ Default:
 4002
 ```
 
-## Environment variables
+## Configuration
 
-Required:
+### Base committed config
+
+This file is safe to commit:
+
+```txt
+src/main/resources/application.yml
+```
+
+It contains only placeholders and defaults, not real secrets.
+
+### Local developer config
+
+Create this file for your machine:
+
+```txt
+src/main/resources/application-local.yml
+```
+
+This file is ignored by Git.
+
+You can copy from:
+
+```txt
+src/main/resources/application-local.yml.example
+```
+
+Example local config:
+
+```yml
+app:
+  prismic:
+    repository-name: your-repository-name
+    access-token: your-prismic-read-token
+    cache-ttl-seconds: 300
+```
+
+### Optional environment variables
 
 ```env
 PRISMIC_REPOSITORY_NAME=your-repository
-```
-
-Optional:
-
-```env
 PRISMIC_ACCESS_TOKEN=your-read-token
 PRISMIC_JAVA_CACHE_TTL_SECONDS=300
 ```
@@ -64,7 +95,7 @@ This app is scaffolded as a Maven Spring Boot application.
 From this folder:
 
 ```bash
-mvn spring-boot:run
+mvn spring-boot:run -Dspring-boot.run.profiles=local
 ```
 
 This project includes:
@@ -79,7 +110,7 @@ or:
 
 ```bash
 mvn clean package
-java -jar target/prismic-java-api-0.0.1-SNAPSHOT.jar
+java -jar target/prismic-java-api-0.0.1-SNAPSHOT.jar --spring.profiles.active=local
 ```
 
 ## Sample response

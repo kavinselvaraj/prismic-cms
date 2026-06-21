@@ -1,0 +1,5 @@
+app:
+  prismic:
+    repository-name: your-repository-name
+    access-token: your-prismic-read-token
+    cache-ttl-seconds: 300
