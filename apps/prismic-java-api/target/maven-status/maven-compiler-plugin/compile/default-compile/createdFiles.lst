@@ -1,0 +1,7 @@
+com\ibe\prismicapi\model\LabelsGatewayResponse.class
+com\ibe\prismicapi\PrismicJavaApiApplication.class
+com\ibe\prismicapi\service\PrismicLabelsGatewayService$CachedLabelsResponse.class
+com\ibe\prismicapi\controller\PrismicLabelsController.class
+com\ibe\prismicapi\config\PrismicGatewayProperties.class
+com\ibe\prismicapi\service\PrismicLabelsGatewayService.class
+META-INF\spring-configuration-metadata.json

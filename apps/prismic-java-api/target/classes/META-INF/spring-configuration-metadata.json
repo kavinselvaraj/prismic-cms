@@ -1,0 +1,33 @@
+{
+  "groups": [
+    {
+      "name": "app.prismic",
+      "type": "com.ibe.prismicapi.config.PrismicGatewayProperties",
+      "sourceType": "com.ibe.prismicapi.config.PrismicGatewayProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "app.prismic.access-token",
+      "type": "java.lang.String",
+      "sourceType": "com.ibe.prismicapi.config.PrismicGatewayProperties"
+    },
+    {
+      "name": "app.prismic.cache-ttl-seconds",
+      "type": "java.lang.Long",
+      "sourceType": "com.ibe.prismicapi.config.PrismicGatewayProperties",
+      "defaultValue": 300
+    },
+    {
+      "name": "app.prismic.label-document-types",
+      "type": "java.util.List<java.lang.String>",
+      "sourceType": "com.ibe.prismicapi.config.PrismicGatewayProperties"
+    },
+    {
+      "name": "app.prismic.repository-name",
+      "type": "java.lang.String",
+      "sourceType": "com.ibe.prismicapi.config.PrismicGatewayProperties"
+    }
+  ],
+  "hints": []
+}
