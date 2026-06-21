@@ -1,13 +1,15 @@
+export type PassengerCounts = {
+  adults: number;
+  children?: number;
+  infants?: number;
+};
+
 export type SearchRoutesRequest = {
   origin: string;
   destination: string;
   departureDate: string;
   returnDate?: string;
-  passengers: {
-    adults: number;
-    children?: number;
-    infants?: number;
-  };
+  passengers: PassengerCounts;
 };
 
 export type SearchRoute = {
@@ -22,4 +24,17 @@ export type SearchRoute = {
     amount: number;
     currency: string;
   };
+};
+
+export type FlightSearchFormValues = {
+  origin: string;
+  destination: string;
+  departureDate: string;
+  returnDate: string;
+  passengers: {
+    adults: number;
+    children: number;
+    infants: number;
+  };
+  currency: string;
 };

@@ -11,15 +11,36 @@ type JsonPlaceholderPost = {
 export async function searchRoutesServerService(
   payload: SearchRoutesRequest,
 ): Promise<SearchRoute[]> {
+  console.log("[server-service] GET", backendEndpoints.searchRoutes, {
+    apiSource: process.env.API_SOURCE === "backend" ? "backend" : "mock",
+    runtime: "server",
+  });
+
   const { data } = await api.get<Array<JsonPlaceholderPost | SearchRoute>>(
     backendEndpoints.searchRoutes,
   );
 
   if (isSearchRouteList(data)) {
+    console.log("[server-service] RESPONSE existing SearchRoute[]", {
+      routeCount: data.length,
+      runtime: "server",
+    });
     return data;
   }
 
-  return data.slice(0, 5).map((post) => mapPostToSearchRoute(post, payload));
+  const posts = data as JsonPlaceholderPost[];
+
+  const mappedRoutes = posts
+    .slice(0, 5)
+    .map((post) => mapPostToSearchRoute(post, payload));
+
+  console.log("[server-service] RESPONSE mapped JsonPlaceholder posts", {
+    postCount: posts.length,
+    routeCount: mappedRoutes.length,
+    runtime: "server",
+  });
+
+  return mappedRoutes;
 }
 
 function isSearchRouteList(

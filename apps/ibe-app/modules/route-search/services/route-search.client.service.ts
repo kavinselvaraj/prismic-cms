@@ -11,10 +11,22 @@ export async function searchRoutesClientService(params: {
   request: SearchRoutesRequest;
 }) {
   const { locale, request } = params;
+  const url = apiEndpoints.searchRoutes(locale);
+
+  console.log("[client-service] POST", url, {
+    request,
+    runtime: "browser",
+  });
+
   const response = await apiClient.post<SearchRoutesResponse>(
-    apiEndpoints.searchRoutes(locale),
+    url,
     request,
   );
+
+  console.log("[client-service] RESPONSE", url, {
+    routeCount: response.data.data.length,
+    runtime: "browser",
+  });
 
   return response.data.data;
 }
