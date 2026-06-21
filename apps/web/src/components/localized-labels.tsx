@@ -1,8 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { useLabelMessages } from "@/i18n/use-label-messages";
+import { useEffect } from "react";
 import type { AppLocale } from "@/i18n/routing";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import {
+  ensureLabelsLoaded,
+  selectLabelsError,
+  selectLabelsLoading,
+  selectLabelsMessages,
+} from "@/store/slices/labels.slice";
 
 type LocalizedLabelsProps = {
   locale: AppLocale;
@@ -10,7 +17,14 @@ type LocalizedLabelsProps = {
 };
 
 export function LocalizedLabels({ locale, page }: LocalizedLabelsProps) {
-  const { error, isLoading, messages } = useLabelMessages(locale);
+  const dispatch = useAppDispatch();
+  const error = useAppSelector(selectLabelsError);
+  const isLoading = useAppSelector(selectLabelsLoading);
+  const messages = useAppSelector((state) => selectLabelsMessages(state, locale));
+
+  useEffect(() => {
+    void dispatch(ensureLabelsLoaded(locale));
+  }, [dispatch, locale]);
 
   if (isLoading) {
     return <p>Loading labels...</p>;

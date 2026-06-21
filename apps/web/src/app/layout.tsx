@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./styles.css";
+import { StoreProvider } from "@/store/provider";
 
 export const metadata: Metadata = {
   title: "IBE Web",
@@ -13,7 +14,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <StoreProvider>{children}</StoreProvider>
+      </body>
     </html>
   );
 }
