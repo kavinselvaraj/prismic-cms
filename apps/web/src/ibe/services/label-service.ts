@@ -3,10 +3,12 @@ import {
   getRepositoryName,
   getSharedEnvValue,
 } from "@repo/cms/prismic";
+import { unstable_cache } from "next/cache";
 import {
   localMessages,
   type FlightMessages,
 } from "@/i18n/messages";
+import { getPrismicDocuments } from "@/i18n/prismic-document-registry";
 import { routing, type AppLocale } from "@/i18n/routing";
 import { resolvePrismicLabels } from "../utils/resolve-prismic-labels";
 
@@ -16,6 +18,17 @@ const prismicLocaleMap: Record<AppLocale, string> = {
   en: "en-us",
   ja: "ja-jp",
 };
+
+const LABEL_CACHE_REVALIDATE_SECONDS = 60 * 15;
+
+const getCachedPrismicLabels = unstable_cache(
+  async (locale: AppLocale) => fetchPrismicLabels(locale),
+  ["ibe-labels"],
+  {
+    revalidate: LABEL_CACHE_REVALIDATE_SECONDS,
+    tags: ["ibe-labels"],
+  },
+);
 
 export async function getIbeLabels(locale: AppLocale): Promise<FlightMessages> {
   const source = getServerLabelSource();
@@ -50,111 +63,89 @@ export function resolveLocale(locale: string | undefined): AppLocale {
 async function getIbeLabelsFromPrismic(
   locale: AppLocale,
 ): Promise<FlightMessages> {
+  try {
+    return await getCachedPrismicLabels(locale);
+  } catch (error) {
+    console.warn("[label-service] PRISMIC LABEL LOAD FAILED, falling back to local", {
+      locale,
+      message: error instanceof Error ? error.message : String(error),
+    });
+
+    return localMessages[locale];
+  }
+}
+
+async function fetchPrismicLabels(locale: AppLocale): Promise<FlightMessages> {
   const lang = prismicLocaleMap[locale] ?? prismicLocaleMap.en;
   const repositoryName = getRepositoryName();
   const client = createPrismicClient();
+  const expectedDocumentTypes = getPrismicDocuments(locale).map(
+    (document) => document.modelId,
+  );
 
   console.log("[label-service] PRISMIC API HIT", {
     locale,
     lang,
     repositoryName,
+    expectedDocumentTypes,
   });
 
-  try {
-    const ibeDocument = (await client.getSingle("ibe", {
-      lang,
-    })) as {
-      id: string;
-      lang: string;
-      data: Record<string, unknown>;
-    };
+  const ibeDocument = (await client.getSingle("ibe", {
+    lang,
+  })) as {
+    id: string;
+    lang: string;
+    data: Record<string, unknown>;
+  };
 
-    console.log("[label-service] IBE PARENT RESPONSE", {
-      locale,
-      ibeId: ibeDocument.id,
-      ibeLang: ibeDocument.lang,
-      ibeData: ibeDocument.data,
-    });
+  console.log("[label-service] IBE PARENT RESPONSE", {
+    locale,
+    ibeId: ibeDocument.id,
+    ibeLang: ibeDocument.lang,
+  });
 
-    const childIds = Object.values(ibeDocument.data)
-      .filter(isPrismicDocumentLink)
-      .map((value) => value.id)
-      .filter(Boolean);
+  const childIds = expectedDocumentTypes
+    .map((documentType) => findChildDocumentId(ibeDocument.data, documentType))
+    .filter(Boolean) as string[];
 
-    if (childIds.length > 0) {
-      const childDocuments = (await client.getAllByIDs(childIds, {
-        lang,
-      })) as Array<{
-        id: string;
-        type: string;
-        lang: string;
-        data: Record<string, unknown>;
-      }>;
-      const childDocumentMap = Object.fromEntries(
-        childDocuments.map((document) => [document.type, document]),
-      );
-      const flightSearch = childDocumentMap.flight_search;
-      const flightSelect = childDocumentMap.flight_select;
-
-      if (flightSearch && flightSelect) {
-        console.log("[label-service] IBE CHILD DOCS RESOLVED", {
-          locale,
-          childTypes: childDocuments.map((document) => document.type),
-        });
-
-        const labels = resolvePrismicLabels(
-          localMessages.en,
-          childDocumentMap as Record<string, { data: Record<string, unknown> }>,
-        );
-
-        console.log("[label-service] MAPPED LABELS", {
-          locale,
-          labels,
-        });
-
-        return labels;
-      }
-    }
-
-    console.warn("[label-service] IBE PARENT INCOMPLETE, falling back to direct child fetch", {
-      locale,
-      childIds,
-    });
-  } catch (error) {
-    console.warn("[label-service] IBE PARENT FETCH FAILED, falling back to direct child fetch", {
-      locale,
-      message: error instanceof Error ? error.message : String(error),
-    });
+  if (childIds.length !== expectedDocumentTypes.length) {
+    throw new Error(
+      `IBE parent is missing child document links for: ${expectedDocumentTypes.join(", ")}`,
+    );
   }
 
-  const [flightSearch, flightSelect, passenger] = await Promise.all([
-    client.getSingle("flight_search", { lang }),
-    client.getSingle("flight_select", { lang }),
-    client.getSingle("passenger", { lang }).catch(() => undefined),
-  ]);
+  const childDocuments = (await client.getAllByIDs(childIds, {
+    lang,
+  })) as Array<{
+    id: string;
+    type: string;
+    lang: string;
+    data: Record<string, unknown>;
+  }>;
+  const childDocumentMap = Object.fromEntries(
+    childDocuments.map((document) => [document.type, document]),
+  );
 
-  console.log("[label-service] PRISMIC RAW RESPONSE", {
+  const missingDocumentTypes = expectedDocumentTypes.filter(
+    (documentType) => !childDocumentMap[documentType],
+  );
+
+  if (missingDocumentTypes.length > 0) {
+    throw new Error(
+      `Prismic child documents not resolved for: ${missingDocumentTypes.join(", ")}`,
+    );
+  }
+
+  console.log("[label-service] IBE CHILD DOCS RESOLVED", {
     locale,
-    flightSearchId: flightSearch.id,
-    flightSearchLang: flightSearch.lang,
-    flightSearchData: flightSearch.data,
-    flightSelectId: flightSelect.id,
-    flightSelectLang: flightSelect.lang,
-    flightSelectData: flightSelect.data,
-    passengerId: passenger?.id,
-    passengerLang: passenger?.lang,
-    passengerData: passenger?.data,
+    childTypes: childDocuments.map((document) => document.type),
+    requestCount: 2,
   });
 
-  const labels = resolvePrismicLabels(localMessages.en, {
-    flight_search: flightSearch as { data: Record<string, unknown> },
-    flight_select: flightSelect as { data: Record<string, unknown> },
-    ...(passenger
-      ? {
-          passenger: passenger as { data: Record<string, unknown> },
-        }
-      : {}),
-  });
+  const labels = resolvePrismicLabels(
+    localMessages.en,
+    childDocumentMap as Record<string, { data: Record<string, unknown> }>,
+  );
 
   console.log("[label-service] MAPPED LABELS", {
     locale,
@@ -173,4 +164,17 @@ function isPrismicDocumentLink(
     "id" in value &&
     typeof (value as { id?: unknown }).id === "string"
   );
+}
+
+function findChildDocumentId(
+  data: Record<string, unknown>,
+  documentType: string,
+) {
+  for (const value of Object.values(data)) {
+    if (isPrismicDocumentLink(value) && value.type === documentType) {
+      return value.id;
+    }
+  }
+
+  return undefined;
 }
