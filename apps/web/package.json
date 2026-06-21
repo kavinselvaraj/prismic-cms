@@ -9,13 +9,15 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@reduxjs/toolkit": "^2.8.2",
     "@prismicio/client": "^7.16.0",
     "@prismicio/react": "^2.9.2",
     "@repo/cms": "workspace:*",
     "next": "^15.5.19",
     "next-intl": "^4.0.0",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "react-redux": "^9.2.0"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",

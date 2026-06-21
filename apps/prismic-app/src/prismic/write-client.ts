@@ -1,8 +1,12 @@
 import * as prismic from "@prismicio/client";
-import { getRepositoryName, prismicConfig } from "@repo/cms/prismic";
+import {
+  getRepositoryName,
+  getSharedEnvValue,
+  prismicConfig,
+} from "@repo/cms/prismic";
 
 export function createPrismicWriteClient(options?: prismic.ClientConfig) {
-  const writeToken = process.env.PRISMIC_WRITE_TOKEN;
+  const writeToken = getSharedEnvValue("PRISMIC_WRITE_TOKEN");
 
   if (!writeToken) {
     throw new Error("PRISMIC_WRITE_TOKEN is required to seed Prismic content");

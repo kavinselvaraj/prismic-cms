@@ -1,10 +1,12 @@
-import { existsSync, readFileSync } from "node:fs";
-import path from "node:path";
 import {
   getPrismicDocuments,
   type PrismicLabelDocument,
 } from "../../web/src/i18n/prismic-document-registry";
 import type { AppLocale } from "../../web/src/i18n/routing";
+import {
+  getSharedEnvValue,
+  loadSharedEnvIntoProcessEnv,
+} from "../../../packages/cms/src/prismic/config";
 import { createFieldId, createPrismicModel } from "./generate-prismic-models";
 
 type ExistingDocument = {
@@ -29,7 +31,7 @@ const locale = (readArgValue("--locale") ?? "en") as AppLocale;
 const shouldWrite = process.argv.includes("--write");
 const prismicLocale = toPrismicLocale(locale);
 
-loadEnvFiles();
+loadSharedEnvIntoProcessEnv();
 
 const documents = getPrismicDocuments(locale);
 
@@ -353,42 +355,6 @@ function readArgValue(name: string) {
   return index === -1 ? undefined : process.argv[index + 1];
 }
 
-function loadEnvFiles() {
-  for (const envFilePath of [
-    ".env",
-    ".env.local",
-    "../../.env",
-    "../../.env.local",
-  ]) {
-    const resolvedPath = path.resolve(envFilePath);
-
-    if (!existsSync(resolvedPath)) {
-      continue;
-    }
-
-    for (const line of readFileSync(resolvedPath, "utf8").split(/\r?\n/)) {
-      const trimmedLine = line.trim();
-
-      if (!trimmedLine || trimmedLine.startsWith("#")) {
-        continue;
-      }
-
-      const separatorIndex = trimmedLine.indexOf("=");
-
-      if (separatorIndex === -1) {
-        continue;
-      }
-
-      const key = trimmedLine.slice(0, separatorIndex).trim();
-      const value = trimmedLine.slice(separatorIndex + 1).trim();
-
-      if (key && process.env[key] === undefined) {
-        process.env[key] = value.replace(/^["']|["']$/g, "");
-      }
-    }
-  }
-}
-
 function getDocumentIdOverride(modelId: string, locale: AppLocale) {
   const key = [
     "PRISMIC",
@@ -397,7 +363,7 @@ function getDocumentIdOverride(modelId: string, locale: AppLocale) {
     "DOCUMENT_ID",
   ].join("_");
 
-  const value = process.env[key];
+  const value = getSharedEnvValue(key);
 
   return value?.trim() ? value.trim() : undefined;
 }

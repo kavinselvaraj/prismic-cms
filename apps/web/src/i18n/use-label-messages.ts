@@ -8,6 +8,7 @@ type LabelsApiResponse = {
   locale: AppLocale;
   messages: FlightMessages;
   source: "local" | "prismic";
+  version: string;
 };
 
 type LabelsState = {
@@ -67,13 +68,13 @@ export function useLabelMessages(locale: AppLocale) {
         }
 
         const payload = (await response.json()) as LabelsApiResponse;
-        const hasLabelChanges =
-          JSON.stringify(cachedResponse?.messages) !== JSON.stringify(payload.messages);
+        const hasLabelChanges = cachedResponse?.version !== payload.version;
 
         console.log("[labels-cache] API RESPONSE", {
           locale,
           source: payload.source,
           hasLabelChanges,
+          version: payload.version,
         });
 
         window.localStorage.setItem(storageKey, JSON.stringify(payload));

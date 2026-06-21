@@ -5,6 +5,7 @@ import {
 } from "@repo/cms/prismic";
 import { unstable_cache } from "next/cache";
 import {
+  labelMessagesContract,
   localMessages,
   type FlightMessages,
 } from "@/i18n/messages";
@@ -139,7 +140,7 @@ async function fetchPrismicLabels(locale: AppLocale): Promise<FlightMessages> {
   });
 
   const labels = resolvePrismicLabels(
-    localMessages.en,
+    labelMessagesContract,
     childDocumentMap as Record<string, { data: Record<string, unknown> }>,
   );
 

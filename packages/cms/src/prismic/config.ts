@@ -17,6 +17,16 @@ export function getSharedEnvValue(key: string) {
   return process.env[key] ?? getEnvOverrides()[key];
 }
 
+export function loadSharedEnvIntoProcessEnv() {
+  const overrides = getEnvOverrides();
+
+  for (const [key, value] of Object.entries(overrides)) {
+    if (process.env[key] === undefined) {
+      process.env[key] = value;
+    }
+  }
+}
+
 function getEnvOverrides() {
   if (cachedEnvOverrides) {
     return cachedEnvOverrides;

@@ -4,6 +4,7 @@ import {
   getServerLabelSource,
   resolveLocale,
 } from "@/ibe/services/label-service";
+import { createLabelVersion } from "@/i18n/label-version";
 
 type RouteContext = {
   params: Promise<{
@@ -23,10 +24,12 @@ export async function GET(_: Request, context: RouteContext) {
   });
 
   const messages = await getIbeLabels(resolvedLocale);
+  const version = createLabelVersion(messages);
 
   return NextResponse.json({
     locale: resolvedLocale,
     messages,
     source,
+    version,
   });
 }
