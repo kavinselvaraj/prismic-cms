@@ -1,0 +1,99 @@
+name: Reusable CI
+
+on:
+  workflow_call:
+    inputs:
+      app_name:
+        required: true
+        type: string
+      app_path:
+        required: true
+        type: string
+      run_tests:
+        required: false
+        type: boolean
+        default: true
+      aws_region:
+        required: false
+        type: string
+        default: ''
+      aws_oidc_role_arn:
+        required: false
+        type: string
+        default: ''
+      aws_account_id:
+        required: false
+        type: string
+        default: ''
+      aws_codeartifact_domain:
+        required: false
+        type: string
+        default: ''
+      aws_codeartifact_repository:
+        required: false
+        type: string
+        default: ''
+
+jobs:
+  ci:
+    name: "Quality Gate (Install / Lint / Format / Type Check / Test)"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+      id-token: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.0.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: "pnpm"
+
+      - name: Configure AWS credentials (OIDC)
+        if: ${{ inputs.aws_oidc_role_arn != '' && inputs.aws_region != '' }}
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ inputs.aws_oidc_role_arn }}
+          aws-region: ${{ inputs.aws_region }}
+
+      - name: Configure npm for AWS CodeArtifact
+        if: ${{ inputs.aws_codeartifact_domain != '' && inputs.aws_codeartifact_repository != '' && inputs.aws_account_id != '' && inputs.aws_region != '' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          REGISTRY_HOST="${{ inputs.aws_codeartifact_domain }}-${{ inputs.aws_account_id }}.d.codeartifact.${{ inputs.aws_region }}.amazonaws.com"
+          REGISTRY_PATH="npm/${{ inputs.aws_codeartifact_repository }}/"
+
+          CODEARTIFACT_AUTH_TOKEN=$(aws codeartifact get-authorization-token \
+            --domain "${{ inputs.aws_codeartifact_domain }}" \
+            --domain-owner "${{ inputs.aws_account_id }}" \
+            --region "${{ inputs.aws_region }}" \
+            --query authorizationToken \
+            --output text)
+
+          echo "//${REGISTRY_HOST}/${REGISTRY_PATH}:_authToken=${CODEARTIFACT_AUTH_TOKEN}" >> ~/.npmrc
+          echo "@zipair:registry=https://${REGISTRY_HOST}/${REGISTRY_PATH}" >> ~/.npmrc
+          echo "//${REGISTRY_HOST}/${REGISTRY_PATH}:always-auth=true" >> ~/.npmrc
+
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Format check
+        run: pnpm check
+
+      - name: Lint and type check
+        run: pnpm turbo run lint check-types
+
+      - name: Run tests
+        if: ${{ inputs.run_tests }}
+        run: pnpm turbo run test
