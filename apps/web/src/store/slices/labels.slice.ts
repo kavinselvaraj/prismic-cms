@@ -12,14 +12,14 @@ import type { AppLocale } from "@/i18n/routing";
 export type LabelsApiResponse = {
   locale: AppLocale;
   messages: FlightMessages;
-  source: "local" | "prismic";
+  source: "local" | "prismic" | "backend";
   version: string;
 };
 
 type LocaleLabelsState = {
   loaded: boolean;
   messages: FlightMessages | null;
-  source: "local" | "prismic" | null;
+  source: "local" | "prismic" | "backend" | null;
   version: string | null;
   lastFetchedAt: number | null;
 };

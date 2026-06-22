@@ -26,6 +26,10 @@ export async function generateMetadata({
   return {
     title: "Flight Selection",
     description: "Flight selection page",
+    robots: {
+      index: false,
+      follow: true,
+    },
   };
 }
 

@@ -13,7 +13,7 @@ import { getPrismicDocuments } from "@/i18n/prismic-document-registry";
 import { routing, type AppLocale } from "@/i18n/routing";
 import { resolvePrismicLabels } from "../utils/resolve-prismic-labels";
 
-export type LabelSource = "local" | "prismic";
+export type LabelSource = "local" | "prismic" | "backend";
 
 const prismicLocaleMap: Record<AppLocale, string> = {
   en: "en-us",
@@ -23,6 +23,10 @@ const prismicLocaleMap: Record<AppLocale, string> = {
 const LABEL_CACHE_REVALIDATE_SECONDS = 60 * 15;
 export const LABEL_CACHE_TAG = "ibe-labels";
 const cachedPrismicLabelLoaders = new Map<
+  AppLocale,
+  () => Promise<FlightMessages>
+>();
+const cachedBackendLabelLoaders = new Map<
   AppLocale,
   () => Promise<FlightMessages>
 >();
@@ -39,6 +43,10 @@ export async function getIbeLabels(locale: AppLocale): Promise<FlightMessages> {
     return getIbeLabelsFromPrismic(locale);
   }
 
+  if (source === "backend") {
+    return getIbeLabelsFromBackend(locale);
+  }
+
   console.log("[label-service] LOCAL LABELS HIT", {
     locale,
     messages: localMessages[locale],
@@ -48,7 +56,13 @@ export async function getIbeLabels(locale: AppLocale): Promise<FlightMessages> {
 }
 
 export function getServerLabelSource(): LabelSource {
-  return getSharedEnvValue("LABEL_SOURCE") === "prismic" ? "prismic" : "local";
+  const source = getSharedEnvValue("LABEL_SOURCE");
+
+  if (source === "prismic" || source === "backend") {
+    return source;
+  }
+
+  return "local";
 }
 
 export function resolveLocale(locale: string | undefined): AppLocale {
@@ -152,6 +166,83 @@ async function fetchPrismicLabels(locale: AppLocale): Promise<FlightMessages> {
   return labels;
 }
 
+async function getIbeLabelsFromBackend(
+  locale: AppLocale,
+): Promise<FlightMessages> {
+  try {
+    return await getCachedBackendLabels(locale)();
+  } catch (error) {
+    console.warn("[label-service] BACKEND LABEL LOAD FAILED, falling back to local", {
+      locale,
+      message: error instanceof Error ? error.message : String(error),
+    });
+
+    return localMessages[locale];
+  }
+}
+
+async function fetchBackendLabels(locale: AppLocale): Promise<FlightMessages> {
+  const backendBaseUrl =
+    getSharedEnvValue("PRISMIC_JAVA_API_BASE_URL") ?? "http://localhost:4002";
+  const backendUrl = `${backendBaseUrl.replace(/\/$/, "")}/api/prismic/labels/${locale}`;
+
+  console.log("[label-service] BACKEND API HIT", {
+    locale,
+    backendUrl,
+  });
+
+  const response = await fetch(backendUrl, {
+    headers: {
+      Accept: "application/json",
+    },
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    throw new Error(`Backend labels request failed with status ${response.status}`);
+  }
+
+  const payload = (await response.json()) as {
+    locale: string;
+    prismicLocale: string;
+    documents?: Record<
+      string,
+      {
+        data?: Record<string, unknown>;
+      }
+    >;
+  };
+  const childDocumentMap = Object.fromEntries(
+    Object.entries(payload.documents ?? {})
+      .filter(([documentType]) => documentType !== "ibe")
+      .map(([documentType, document]) => [documentType, { data: document.data ?? {} }]),
+  );
+  const expectedDocumentTypes = getPrismicDocuments(locale).map(
+    (document) => document.modelId,
+  );
+  const missingDocumentTypes = expectedDocumentTypes.filter(
+    (documentType) => !childDocumentMap[documentType],
+  );
+
+  if (missingDocumentTypes.length > 0) {
+    throw new Error(
+      `Backend response is missing label documents for: ${missingDocumentTypes.join(", ")}`,
+    );
+  }
+
+  const labels = resolvePrismicLabels(
+    labelMessagesContract,
+    childDocumentMap as Record<string, { data: Record<string, unknown> }>,
+  );
+
+  console.log("[label-service] BACKEND LABELS MAPPED", {
+    locale,
+    documentTypes: Object.keys(childDocumentMap),
+  });
+
+  return labels;
+}
+
 export function getLabelCacheTag(locale: AppLocale) {
   return `${LABEL_CACHE_TAG}:${locale}`;
 }
@@ -173,6 +264,27 @@ function getCachedPrismicLabels(locale: AppLocale) {
   );
 
   cachedPrismicLabelLoaders.set(locale, loader);
+
+  return loader;
+}
+
+function getCachedBackendLabels(locale: AppLocale) {
+  const cachedLoader = cachedBackendLabelLoaders.get(locale);
+
+  if (cachedLoader) {
+    return cachedLoader;
+  }
+
+  const loader = unstable_cache(
+    async () => fetchBackendLabels(locale),
+    [`${LABEL_CACHE_TAG}:backend`, locale],
+    {
+      revalidate: LABEL_CACHE_REVALIDATE_SECONDS,
+      tags: [LABEL_CACHE_TAG, getLabelCacheTag(locale)],
+    },
+  );
+
+  cachedBackendLabelLoaders.set(locale, loader);
 
   return loader;
 }

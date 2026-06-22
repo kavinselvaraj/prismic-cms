@@ -38,6 +38,7 @@ export default async function LocaleLayout({
           <Link href={`/${locale}/flight-search`}>Flight Search</Link>
           <Link href={`/${locale}/flight-select`}>Flight Selection</Link>
           <Link href={`/${locale}/passenger`}>Passenger</Link>
+          <Link href={`/${locale}/country-demo`}>Country Demo</Link>
           <Link href={`/${locale}/faq`}>FAQ</Link>
         </nav>
 
