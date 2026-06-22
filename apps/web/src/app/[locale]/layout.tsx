@@ -44,7 +44,6 @@ export default async function LocaleLayout({
 
         <LocaleSwitcher currentLocale={locale as "en" | "ja"} />
       </header>
-
       {children}
     </div>
   );
