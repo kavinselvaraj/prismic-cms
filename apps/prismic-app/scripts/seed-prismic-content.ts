@@ -1,13 +1,14 @@
 import {
-  getPrismicDocuments,
   type PrismicLabelDocument,
-} from "../../web/src/i18n/prismic-document-registry";
-import type { AppLocale } from "../../web/src/i18n/routing";
-import {
+  getPrismicDocuments,
   getSharedEnvValue,
   loadSharedEnvIntoProcessEnv,
-} from "../../../packages/cms/src/prismic/config";
+} from "@repo/cms/prismic";
 import { createFieldId, createPrismicModel } from "./generate-prismic-models";
+import {
+  getPrismicLabelSource,
+  loadPrismicLabelMessages,
+} from "./label-source-loader";
 
 type ExistingDocument = {
   id: string;
@@ -27,13 +28,16 @@ type SeedOperation = {
   documentId?: string;
 };
 
-const locale = (readArgValue("--locale") ?? "en") as AppLocale;
+const locale = readArgValue("--locale") ?? "en";
 const shouldWrite = process.argv.includes("--write");
 const prismicLocale = toPrismicLocale(locale);
 
 loadSharedEnvIntoProcessEnv();
 
-const documents = getPrismicDocuments(locale);
+const labelSource = getPrismicLabelSource(readArgValue("--source"));
+const documents = getPrismicDocuments(
+  loadPrismicLabelMessages(labelSource, locale),
+);
 
 main().catch((error) => {
   console.error(formatError(error));
@@ -355,7 +359,7 @@ function readArgValue(name: string) {
   return index === -1 ? undefined : process.argv[index + 1];
 }
 
-function getDocumentIdOverride(modelId: string, locale: AppLocale) {
+function getDocumentIdOverride(modelId: string, locale: string) {
   const key = [
     "PRISMIC",
     modelId.toUpperCase(),

@@ -30,7 +30,7 @@ The generator reads the JSON shape and decides:
   - `apps/web/messages/ja.json`
 
 - Prismic registry:
-  - `apps/web/src/i18n/prismic-document-registry.ts`
+  - `packages/cms/src/prismic/document-registry.ts`
 
 - Generator:
   - `apps/prismic-app/scripts/generate-prismic-models.ts`

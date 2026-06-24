@@ -13,7 +13,9 @@ for (const envFilePath of [
 }
 
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+  transpilePackages: ["@repo/cms"],
+};
 
 module.exports = nextConfig;
 

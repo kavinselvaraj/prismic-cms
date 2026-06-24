@@ -1,4 +1,8 @@
-import { getIbeLabels, getServerLabelSource, resolveLocale } from "@/ibe/services/label-service";
+import {
+  getIbeLabels,
+  getServerLabelSource,
+  resolveLocale,
+} from "./label-service-config";
 import type { AppLocale } from "./routing";
 
 export async function loadMessages(locale: AppLocale) {

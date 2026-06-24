@@ -3,7 +3,7 @@ import {
   getIbeLabels,
   getServerLabelSource,
   resolveLocale,
-} from "@/ibe/services/label-service";
+} from "@/i18n/label-service-config";
 import { createLabelVersion } from "@/i18n/label-version";
 
 type RouteContext = {

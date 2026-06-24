@@ -2,9 +2,13 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import {
-  getPrismicDocuments,
   type PrismicLabelDocument,
-} from "../../web/src/i18n/prismic-document-registry";
+  getPrismicDocuments,
+} from "@repo/cms/prismic";
+import {
+  getPrismicLabelSource,
+  loadPrismicLabelMessages,
+} from "./label-source-loader";
 
 type PrismicField =
   | {
@@ -43,14 +47,17 @@ type PrismicModel = {
 };
 
 const outputRoot = path.resolve("customtypes");
-const documents = getPrismicDocuments("en");
+const labelSource = getPrismicLabelSource(readArgValue("--source"));
+const documents = getPrismicDocuments(
+  loadPrismicLabelMessages(labelSource, "en"),
+);
 
 if (isMainModule()) {
   for (const document of documents) {
     writeModel(document.modelId, createPrismicModel(document));
   }
 
-  writeModel("ibe", createIbeModel(documents));
+  writeModel(labelSource.parentDocumentType, createIbeModel(documents));
 
   console.log(`Generated ${documents.length + 1} Prismic model(s).`);
 }
@@ -269,6 +276,12 @@ function isMainModule() {
   return process.argv[1]
     ? fileURLToPath(import.meta.url) === path.resolve(process.argv[1])
     : false;
+}
+
+function readArgValue(name: string) {
+  const index = process.argv.indexOf(name);
+
+  return index === -1 ? undefined : process.argv[index + 1];
 }
 
 function writeModel(modelId: string, model: PrismicModel) {

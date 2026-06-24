@@ -29,7 +29,7 @@ Owns:
 
 Owns:
 
-- `apps/web/src/i18n/prismic-document-registry.ts`
+- `packages/cms/src/prismic/document-registry.ts`
 - `apps/prismic-app/customtypes`
 - `apps/prismic-app/scripts`
 - Slice Machine sync
@@ -48,7 +48,7 @@ Owns:
 
 ### Prismic document registry
 
-- `apps/web/src/i18n/prismic-document-registry.ts`
+- `packages/cms/src/prismic/document-registry.ts`
 
 ### Generator
 
@@ -201,7 +201,7 @@ pnpm prismic:seed -- --locale ja
 
 Each Prismic document is declared in:
 
-- `apps/web/src/i18n/prismic-document-registry.ts`
+- `packages/cms/src/prismic/document-registry.ts`
 
 Example:
 
@@ -668,7 +668,7 @@ Add labels in:
 
 Register a new document in:
 
-- `apps/web/src/i18n/prismic-document-registry.ts`
+- `packages/cms/src/prismic/document-registry.ts`
 
 Example:
 
@@ -989,7 +989,7 @@ registered Prismic documents.
 
 When a new document is added to:
 
-- `apps/web/src/i18n/prismic-document-registry.ts`
+- `packages/cms/src/prismic/document-registry.ts`
 
 and you run:
 

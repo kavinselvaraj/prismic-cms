@@ -1,15 +1,23 @@
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import {
-  getPrismicDocuments,
   type PrismicLabelDocument,
-} from "../../web/src/i18n/prismic-document-registry";
+  getPrismicDocuments,
+} from "@repo/cms/prismic";
 import {
   createFieldId,
   createIbeModel,
   createPrismicModel,
 } from "./generate-prismic-models";
-const documents = getPrismicDocuments("en");
+import {
+  getPrismicLabelSource,
+  loadPrismicLabelMessages,
+} from "./label-source-loader";
+
+const labelSource = getPrismicLabelSource(readArgValue("--source"));
+const documents = getPrismicDocuments(
+  loadPrismicLabelMessages(labelSource, "en"),
+);
 
 const errors: string[] = [];
 
@@ -70,10 +78,16 @@ function validateDuplicateFieldIds(document: PrismicLabelDocument) {
 }
 
 function validateGeneratedIbeModel(documents: PrismicLabelDocument[]) {
-  const modelPath = path.resolve("customtypes", "ibe", "index.json");
+  const modelPath = path.resolve(
+    "customtypes",
+    labelSource.parentDocumentType,
+    "index.json",
+  );
 
   if (!existsSync(modelPath)) {
-    errors.push("Missing generated model for ibe");
+    errors.push(
+      `Missing generated model for ${labelSource.parentDocumentType}`,
+    );
     return;
   }
 
@@ -106,4 +120,10 @@ function flattenObject(
   return Object.entries(value).flatMap(([key, nestedValue]) =>
     flattenObject(nestedValue, prefix ? `${prefix}.${key}` : key),
   );
+}
+
+function readArgValue(name: string) {
+  const index = process.argv.indexOf(name);
+
+  return index === -1 ? undefined : process.argv[index + 1];
 }
