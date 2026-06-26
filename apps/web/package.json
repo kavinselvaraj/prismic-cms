@@ -13,6 +13,7 @@
     "@prismicio/react": "^2.9.2",
     "@reduxjs/toolkit": "^2.8.2",
     "@repo/cms": "workspace:*",
+    "@repo/sdk": "workspace:*",
     "i18n-iso-countries": "^7.14.0",
     "libphonenumber-js": "^1.13.7",
     "next": "^15.5.19",

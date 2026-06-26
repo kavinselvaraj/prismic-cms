@@ -1,0 +1,22 @@
+{
+  "name": "@repo/sdk",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./generated": "./src/generated/index.ts",
+    "./swagger.yml": "./swagger.yml"
+  },
+  "files": ["src", "swagger.yml", "openapi-generator-config.json"],
+  "scripts": {
+    "openapi:generate": "openapi-generator-cli generate -i ./swagger.yml -g typescript-fetch -o ./src/generated -c ./openapi-generator-config.json",
+    "lint": "biome check .",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@openapitools/openapi-generator-cli": "^2.39.0",
+    "@repo/typescript-config": "workspace:*",
+    "typescript": "^5.9.3"
+  }
+}
