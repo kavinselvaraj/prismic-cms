@@ -9,5 +9,6 @@ export * from './Photo';
 export * from './Post';
 export * from './PostInput';
 export * from './PostPatch';
+export * from './SecurityTokenResponse';
 export * from './Todo';
 export * from './User';

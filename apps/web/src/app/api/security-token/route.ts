@@ -1,4 +1,3 @@
-import { NextResponse } from "next/server";
 import {
   SECURITY_TOKEN_COOKIE_NAME,
   SECURITY_TOKEN_TTL_SECONDS,
@@ -6,6 +5,7 @@ import {
   createSecurityToken,
   createSecurityTokenCookieOptions,
 } from "@/security/security-token";
+import { NextResponse } from "next/server";
 
 export async function POST() {
   const token = createSecurityToken();

@@ -1,3 +1,4 @@
+import { SecurityTokenApi, createSdkClientContext } from "@repo/sdk";
 import createMiddleware from "next-intl/middleware";
 import type { NextRequest } from "next/server";
 import { routing } from "./i18n/routing";
@@ -12,18 +13,15 @@ export default async function middleware(request: NextRequest) {
   )?.value;
 
   if (!existingSecurityToken) {
-    const tokenResponse = await fetch(
-      new URL("/api/security-token", request.nextUrl.origin),
-      {
-        method: "POST",
-        headers: {
-          cookie: request.headers.get("cookie") ?? "",
-        },
-        cache: "no-store",
-      },
-    );
+    const context = createSdkClientContext({
+      baseUrl: request.nextUrl.origin,
+    });
+    const securityTokenApi = context.getApi(SecurityTokenApi);
+    const tokenResponse = await securityTokenApi.createSecurityTokenRaw({
+      cache: "no-store",
+    });
 
-    const setCookieHeader = tokenResponse.headers.get("set-cookie");
+    const setCookieHeader = tokenResponse.raw.headers.get("set-cookie");
 
     if (setCookieHeader) {
       response.headers.append("set-cookie", setCookieHeader);
@@ -36,12 +34,3 @@ export default async function middleware(request: NextRequest) {
 export const config = {
   matcher: ["/((?!api|_next|_vercel|.*\\..*).*)"],
 };
-
-// import { SecurityTokenApi, createSdkClientContext } from "@repo/sdk";
-
-// const context = createSdkClientContext({
-//   baseUrl: request.nextUrl.origin,
-// });
-
-// const securityTokenApi = context.getApi(SecurityTokenApi);
-// const tokenResponse = await securityTokenApi.createSecurityToken();

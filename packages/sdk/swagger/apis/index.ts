@@ -4,5 +4,6 @@ export * from './AlbumsApi';
 export * from './CommentsApi';
 export * from './PhotosApi';
 export * from './PostsApi';
+export * from './SecurityTokenApi';
 export * from './TodosApi';
 export * from './UsersApi';

@@ -3,6 +3,7 @@ apis/AlbumsApi.ts
 apis/CommentsApi.ts
 apis/PhotosApi.ts
 apis/PostsApi.ts
+apis/SecurityTokenApi.ts
 apis/TodosApi.ts
 apis/UsersApi.ts
 apis/index.ts
@@ -19,6 +20,8 @@ docs/Post.md
 docs/PostInput.md
 docs/PostPatch.md
 docs/PostsApi.md
+docs/SecurityTokenApi.md
+docs/SecurityTokenResponse.md
 docs/Todo.md
 docs/TodosApi.md
 docs/User.md
@@ -33,6 +36,7 @@ models/Photo.ts
 models/Post.ts
 models/PostInput.ts
 models/PostPatch.ts
+models/SecurityTokenResponse.ts
 models/Todo.ts
 models/User.ts
 models/index.ts

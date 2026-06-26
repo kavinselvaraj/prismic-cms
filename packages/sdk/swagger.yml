@@ -12,7 +12,19 @@ tags:
   - name: Photos
   - name: Todos
   - name: Users
+  - name: SecurityToken
 paths:
+  /api/security-token:
+    post:
+      operationId: createSecurityToken
+      tags: [SecurityToken]
+      responses:
+        "200":
+          description: A security token cookie has been issued.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SecurityTokenResponse"
   /posts:
     get:
       operationId: listPosts
@@ -409,3 +421,11 @@ components:
           type: string
         bs:
           type: string
+    SecurityTokenResponse:
+      type: object
+      required: [expiresInSeconds, reused]
+      properties:
+        expiresInSeconds:
+          type: integer
+        reused:
+          type: boolean
