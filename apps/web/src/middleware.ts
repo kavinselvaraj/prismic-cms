@@ -36,3 +36,12 @@ export default async function middleware(request: NextRequest) {
 export const config = {
   matcher: ["/((?!api|_next|_vercel|.*\\..*).*)"],
 };
+
+// import { SecurityTokenApi, createSdkClientContext } from "@repo/sdk";
+
+// const context = createSdkClientContext({
+//   baseUrl: request.nextUrl.origin,
+// });
+
+// const securityTokenApi = context.getApi(SecurityTokenApi);
+// const tokenResponse = await securityTokenApi.createSecurityToken();
