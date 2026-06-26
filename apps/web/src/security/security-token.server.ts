@@ -22,7 +22,5 @@ export async function requireSecurityToken(): Promise<string> {
 export async function getAuthorizedSdkClientContextForRequest() {
   const securityToken = await requireSecurityToken();
 
-  return createAuthorizedSdkClientContext(securityToken, {
-    baseUrl: "https://jsonplaceholder.typicode.com",
-  });
+  return createAuthorizedSdkClientContext(securityToken);
 }
