@@ -3,6 +3,6 @@
   "compilerOptions": {
     "baseUrl": "."
   },
-  "include": ["src/**/*.ts"],
+  "include": ["index.ts", "sdk-client.ts", "swagger/**/*.ts"],
   "exclude": ["node_modules"]
 }

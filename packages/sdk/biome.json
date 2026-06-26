@@ -1,6 +1,6 @@
 {
   "extends": ["../../biome.json"],
   "files": {
-    "ignore": ["src/generated"]
+    "ignore": ["swagger"]
   }
 }

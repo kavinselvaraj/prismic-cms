@@ -4,13 +4,22 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/index.ts",
-    "./generated": "./src/generated/index.ts",
+    ".": "./index.ts",
+    "./swagger": "./swagger/index.ts",
     "./swagger.yml": "./swagger.yml"
   },
-  "files": ["src", "swagger.yml", "openapi-generator-config.json"],
+  "files": [
+    "index.ts",
+    "sdk-client.ts",
+    "swagger",
+    "swagger.yml",
+    "openapi-generator-config.json"
+  ],
   "scripts": {
-    "openapi:generate": "openapi-generator-cli generate -i ./swagger.yml -g typescript-fetch -o ./src/generated -c ./openapi-generator-config.json",
+    "sdk:clean": "node -e \"require('node:fs').rmSync('./swagger', { recursive: true, force: true })\"",
+    "sdk:generate": "openapi-generator-cli generate -i ./swagger.yml -g typescript-fetch -o ./swagger -c ./openapi-generator-config.json",
+    "sdk:refresh": "pnpm run sdk:clean && pnpm run sdk:generate",
+    "openapi:generate": "pnpm run sdk:generate",
     "lint": "biome check .",
     "typecheck": "tsc --noEmit"
   },

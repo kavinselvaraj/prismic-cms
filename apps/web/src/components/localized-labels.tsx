@@ -1,7 +1,5 @@
 "use client";
 
-import Link from "next/link";
-import { useEffect } from "react";
 import type { AppLocale } from "@/i18n/routing";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
@@ -10,6 +8,8 @@ import {
   selectLabelsLoading,
   selectLabelsMessages,
 } from "@/store/slices/labels.slice";
+import Link from "next/link";
+import { useEffect } from "react";
 
 type LocalizedLabelsProps = {
   locale: AppLocale;
@@ -20,7 +20,9 @@ export function LocalizedLabels({ locale, page }: LocalizedLabelsProps) {
   const dispatch = useAppDispatch();
   const error = useAppSelector(selectLabelsError);
   const isLoading = useAppSelector(selectLabelsLoading);
-  const messages = useAppSelector((state) => selectLabelsMessages(state, locale));
+  const messages = useAppSelector((state) =>
+    selectLabelsMessages(state, locale),
+  );
 
   useEffect(() => {
     void dispatch(ensureLabelsLoaded(locale));

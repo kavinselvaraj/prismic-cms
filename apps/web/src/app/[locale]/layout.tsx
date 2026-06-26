@@ -1,8 +1,8 @@
+import { LocaleSwitcher } from "@/components/locale-switcher";
+import { routing } from "@/i18n/routing";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
-import { LocaleSwitcher } from "@/components/locale-switcher";
-import { routing } from "@/i18n/routing";
 
 type LocaleLayoutProps = {
   children: ReactNode;
@@ -39,6 +39,8 @@ export default async function LocaleLayout({
           <Link href={`/${locale}/flight-select`}>Flight Selection</Link>
           <Link href={`/${locale}/passenger`}>Passenger</Link>
           <Link href={`/${locale}/country-demo`}>Country Demo</Link>
+          <Link href={`/${locale}/jsonplaceholder/posts`}>Posts API</Link>
+          <Link href={`/${locale}/jsonplaceholder/users`}>Users API</Link>
           <Link href={`/${locale}/faq`}>FAQ</Link>
         </nav>
 
