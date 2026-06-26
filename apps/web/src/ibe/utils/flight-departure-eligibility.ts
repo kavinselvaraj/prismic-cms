@@ -54,11 +54,24 @@ export function getHoursUntilDeparture(
   return Math.max(0, Math.floor((departureTime - now) / (60 * 60 * 1000)));
 }
 
+/** Returns the complete selection decision for one flight offer. */
+export function getFlightSelectionTiming(
+  offer: Pick<FlightTimeOffer, "departureTimeOffset">,
+  now = Date.now(),
+) {
+  return {
+    eligible: isFlightSelectionEligible(offer.departureTimeOffset, now),
+    hoursUntilDeparture: getHoursUntilDeparture(offer.departureTimeOffset, now),
+  };
+}
+
 /**
  * Creates static demo offers relative to the current time so the below/above
  * 48-hour behaviour remains demonstrable on any day.
  */
-export function createStaticSinToUsaOffers(now = Date.now()): FlightTimeOffer[] {
+export function createStaticSinToUsaOffers(
+  now = Date.now(),
+): FlightTimeOffer[] {
   return [
     {
       id: "sin-lax-36h",
@@ -122,8 +135,14 @@ function toOffsetDateTime(date: Date, timeZone: string) {
   const offsetMinutes = Math.round((zonedTimestamp - date.getTime()) / 60000);
   const offsetSign = offsetMinutes >= 0 ? "+" : "-";
   const absoluteOffsetMinutes = Math.abs(offsetMinutes);
-  const offsetHours = String(Math.floor(absoluteOffsetMinutes / 60)).padStart(2, "0");
-  const offsetRemainderMinutes = String(absoluteOffsetMinutes % 60).padStart(2, "0");
+  const offsetHours = String(Math.floor(absoluteOffsetMinutes / 60)).padStart(
+    2,
+    "0",
+  );
+  const offsetRemainderMinutes = String(absoluteOffsetMinutes % 60).padStart(
+    2,
+    "0",
+  );
 
   return `${parts.year}-${parts.month}-${parts.day}T${parts.hour}:${parts.minute}:${parts.second}${offsetSign}${offsetHours}:${offsetRemainderMinutes}`;
 }

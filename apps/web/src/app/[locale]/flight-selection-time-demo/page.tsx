@@ -1,6 +1,6 @@
-import type { Metadata } from "next";
 import { FlightTimeOffsetDemo } from "@/components/flight-time-offset-demo";
 import type { AppLocale } from "@/i18n/routing";
+import type { Metadata } from "next";
 
 type PageProps = {
   params: Promise<{

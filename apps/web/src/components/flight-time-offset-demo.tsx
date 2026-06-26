@@ -1,8 +1,7 @@
 import {
   createStaticSinToUsaOffers,
   formatAirportLocalTime,
-  getHoursUntilDeparture,
-  isFlightSelectionEligible,
+  getFlightSelectionTiming,
 } from "@/ibe/utils/flight-departure-eligibility";
 
 type FlightTimeOffsetDemoProps = {
@@ -10,8 +9,7 @@ type FlightTimeOffsetDemoProps = {
 };
 
 export function FlightTimeOffsetDemo({ locale }: FlightTimeOffsetDemoProps) {
-  const now = Date.now();
-  const offers = createStaticSinToUsaOffers(now);
+  const offers = createStaticSinToUsaOffers();
 
   return (
     <section className="mx-auto max-w-5xl px-6 py-12">
@@ -23,17 +21,16 @@ export function FlightTimeOffsetDemo({ locale }: FlightTimeOffsetDemoProps) {
           SIN to USA departure-time eligibility
         </h1>
         <p className="mt-4 text-base leading-7 text-slate-700">
-          The selection field is displayed only when the departure time is at least 48 hours from now. The comparison uses the API&apos;s <code>departureTimeOffset</code> instant, while each airport time is displayed in its local timezone.
+          The selection field is displayed only when the departure time is at
+          least 48 hours from now. The comparison uses the API&apos;s{" "}
+          <code>departureTimeOffset</code> instant, while each airport time is
+          displayed in its local timezone.
         </p>
       </div>
 
       <div className="mt-8 grid gap-5">
         {offers.map((offer) => {
-          const eligible = isFlightSelectionEligible(offer.departureTimeOffset, now);
-          const hoursUntilDeparture = getHoursUntilDeparture(
-            offer.departureTimeOffset,
-            now,
-          );
+          const timing = getFlightSelectionTiming(offer);
 
           return (
             <article
@@ -50,17 +47,23 @@ export function FlightTimeOffsetDemo({ locale }: FlightTimeOffsetDemoProps) {
                   </h2>
                 </div>
                 <span
-                  className={eligible
-                    ? "border border-emerald-200 bg-emerald-50 px-3 py-1 text-sm font-semibold text-emerald-800"
-                    : "border border-amber-200 bg-amber-50 px-3 py-1 text-sm font-semibold text-amber-900"}
+                  className={
+                    timing.eligible
+                      ? "border border-emerald-200 bg-emerald-50 px-3 py-1 text-sm font-semibold text-emerald-800"
+                      : "border border-amber-200 bg-amber-50 px-3 py-1 text-sm font-semibold text-amber-900"
+                  }
                 >
-                  {eligible ? "Eligible for selection" : "Not selectable yet"}
+                  {timing.eligible
+                    ? "Eligible for selection"
+                    : "Not selectable yet"}
                 </span>
               </div>
 
               <dl className="mt-5 grid gap-4 text-sm md:grid-cols-3">
                 <div>
-                  <dt className="font-semibold text-slate-500">Departure: SIN local time</dt>
+                  <dt className="font-semibold text-slate-500">
+                    Departure: SIN local time
+                  </dt>
                   <dd className="mt-1 font-medium text-slate-950">
                     {formatAirportLocalTime(
                       offer.departureTimeOffset,
@@ -70,7 +73,9 @@ export function FlightTimeOffsetDemo({ locale }: FlightTimeOffsetDemoProps) {
                   </dd>
                 </div>
                 <div>
-                  <dt className="font-semibold text-slate-500">Arrival: USA local time</dt>
+                  <dt className="font-semibold text-slate-500">
+                    Arrival: USA local time
+                  </dt>
                   <dd className="mt-1 font-medium text-slate-950">
                     {formatAirportLocalTime(
                       offer.arrivalTimeOffset,
@@ -80,14 +85,16 @@ export function FlightTimeOffsetDemo({ locale }: FlightTimeOffsetDemoProps) {
                   </dd>
                 </div>
                 <div>
-                  <dt className="font-semibold text-slate-500">Time until departure</dt>
+                  <dt className="font-semibold text-slate-500">
+                    Time until departure
+                  </dt>
                   <dd className="mt-1 font-medium text-slate-950">
-                    {hoursUntilDeparture} hours
+                    {timing.hoursUntilDeparture} hours
                   </dd>
                 </div>
               </dl>
 
-              {eligible ? (
+              {timing.eligible ? (
                 <div className="mt-6 border-t border-slate-200 pt-5">
                   <label className="grid max-w-md gap-2 text-sm font-semibold text-slate-800">
                     Select this flight
@@ -99,7 +106,8 @@ export function FlightTimeOffsetDemo({ locale }: FlightTimeOffsetDemoProps) {
                 </div>
               ) : (
                 <p className="mt-6 border-t border-slate-200 pt-5 text-sm leading-6 text-slate-600">
-                  The selection field is hidden because this flight departs in less than 48 hours.
+                  The selection field is hidden because this flight departs in
+                  less than 48 hours.
                 </p>
               )}
             </article>
