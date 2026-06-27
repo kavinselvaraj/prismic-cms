@@ -1,50 +1,36 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import {
   AlbumsApi,
   PostsApi,
   UsersApi,
   createSdkClientContext,
 } from "@repo/sdk";
-import { handleUnauthorizedSdkResponse } from "@/security/security-token.client";
 import { AppErrorFallback } from "./app-error-fallback";
+import type { JsonPlaceholderDemoData } from "@/lib/jsonplaceholder-demo";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { handleUnauthorizedSdkResponse } from "@/security/security-token.client";
+import {
+  selectJsonPlaceholderCsrDemoEntry,
+  selectJsonPlaceholderSsrDemoEntry,
+  setJsonPlaceholderDemoData,
+  setJsonPlaceholderDemoError,
+  setJsonPlaceholderDemoLoading,
+} from "@/store/slices/jsonplaceholder-demo.slice";
 
-type DemoStatus = "idle" | "loading" | "ready" | "error";
-
-type JsonPlaceholderPost = {
-  body: string;
-  id: number;
-  title: string;
-  userId: number;
-};
-
-type JsonPlaceholderUser = {
-  company: {
-    name: string;
-  };
-  email: string;
-  id: number;
-  name: string;
-  username: string;
-};
-
-type JsonPlaceholderAlbum = {
-  id: number;
-  title: string;
-  userId: number;
+type SdkCsrDemoProps = {
+  serverSnapshot?: JsonPlaceholderDemoData;
 };
 
 const jsonPlaceholderBaseUrl =
   process.env.NEXT_PUBLIC_JSONPLACEHOLDER_BASE_URL ??
   "https://jsonplaceholder.typicode.com";
 
-export function SdkCsrDemo() {
-  const [status, setStatus] = useState<DemoStatus>("idle");
-  const [error, setError] = useState<unknown>(null);
-  const [posts, setPosts] = useState<JsonPlaceholderPost[]>([]);
-  const [users, setUsers] = useState<JsonPlaceholderUser[]>([]);
-  const [albums, setAlbums] = useState<JsonPlaceholderAlbum[]>([]);
+export function SdkCsrDemo({ serverSnapshot }: SdkCsrDemoProps) {
+  const dispatch = useAppDispatch();
+  const csrDemoEntry = useAppSelector(selectJsonPlaceholderCsrDemoEntry);
+  const ssrDemoEntry = useAppSelector(selectJsonPlaceholderSsrDemoEntry);
 
   const { albumsApi, postsApi, usersApi } = useMemo(() => {
     const sdkContext = createSdkClientContext({
@@ -60,13 +46,21 @@ export function SdkCsrDemo() {
   }, []);
 
   useEffect(() => {
-    void loadDemoData();
-  }, []);
+    if (!serverSnapshot) {
+      return;
+    }
 
-  async function loadDemoData() {
+    dispatch(
+      setJsonPlaceholderDemoData({
+        data: serverSnapshot,
+        source: "ssr",
+      }),
+    );
+  }, [dispatch, serverSnapshot]);
+
+  const loadDemoData = useCallback(async () => {
     try {
-      setStatus("loading");
-      setError(null);
+      dispatch(setJsonPlaceholderDemoLoading({ source: "csr" }));
 
       const [nextPosts, nextUsers, nextAlbums] = await Promise.all([
         postsApi.listPosts({}),
@@ -74,36 +68,52 @@ export function SdkCsrDemo() {
         albumsApi.listAlbums({}),
       ]);
 
-      setPosts(nextPosts.slice(0, 6));
-      setUsers(nextUsers.slice(0, 4));
-      setAlbums(nextAlbums.slice(0, 6));
-      setStatus("ready");
+      dispatch(
+        setJsonPlaceholderDemoData({
+          data: {
+            albums: nextAlbums.slice(0, 6),
+            posts: nextPosts.slice(0, 6),
+            users: nextUsers.slice(0, 4),
+          },
+          source: "csr",
+        }),
+      );
     } catch (error) {
-      setStatus("error");
-      setError(error);
+      dispatch(
+        setJsonPlaceholderDemoError({
+          error: error instanceof Error ? error.message : "SDK CSR demo failed",
+          source: "csr",
+        }),
+      );
     }
-  }
+  }, [albumsApi, dispatch, postsApi, usersApi]);
+
+  useEffect(() => {
+    void loadDemoData();
+  }, [loadDemoData]);
 
   return (
     <main className="mx-auto max-w-7xl px-6 py-10">
       <section className="max-w-3xl">
         <p className="text-sm font-semibold uppercase tracking-wide text-teal-700">
-          CSR SDK demo
+          SDK API demo
         </p>
         <h1 className="mt-2 text-4xl font-semibold text-slate-950">
-          Browser calls through packages/sdk
+          Redux-backed CSR and SSR SDK calls
         </h1>
         <p className="mt-4 text-base leading-7 text-slate-700">
-          This page makes client-side SDK calls directly in the browser with an
-          explicit base URL, so you can see the generated clients working outside
-          server components too.
+          This page stores both server-rendered and browser-fetched API values
+          in Redux so the same component can show the two execution paths side by
+          side.
         </p>
       </section>
 
       <section className="mt-8 border border-slate-200 bg-white p-5 shadow-sm">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h2 className="text-lg font-semibold text-slate-950">SDK status</h2>
+            <h2 className="text-lg font-semibold text-slate-950">
+              CSR Redux state
+            </h2>
             <p className="mt-1 text-sm text-slate-600">
               Base URL: <code>{jsonPlaceholderBaseUrl}</code>
             </p>
@@ -113,71 +123,80 @@ export function SdkCsrDemo() {
             onClick={() => void loadDemoData()}
             type="button"
           >
-            Refresh SDK data
+            Refresh CSR data
           </button>
         </div>
 
         <div className="mt-4 flex items-center gap-3 text-sm">
           <span
             className={
-              status === "ready"
+              csrDemoEntry.status === "ready"
                 ? "border border-emerald-200 bg-emerald-50 px-3 py-1 text-emerald-800"
-                : status === "error"
+                : csrDemoEntry.status === "error"
                   ? "border border-rose-200 bg-rose-50 px-3 py-1 text-rose-800"
-                  : "border border-slate-200 bg-slate-50 px-3 py-1 text-slate-700"
+                  : csrDemoEntry.status === "loading"
+                    ? "border border-amber-200 bg-amber-50 px-3 py-1 text-amber-800"
+                    : "border border-slate-200 bg-slate-50 px-3 py-1 text-slate-700"
             }
           >
-            {status}
+            {csrDemoEntry.status}
           </span>
           <span className="text-slate-600">
-            The posts, users, and albums sections below are all fetched by the
-            generated SDK in the browser.
+            The CSR and SSR snapshots below both live in Redux.
           </span>
         </div>
-        {error ? (
+
+        {csrDemoEntry.error ? (
           <div className="mt-4">
-            <AppErrorFallback error={error} title="SDK CSR demo failed" />
+            <AppErrorFallback
+              error={new Error(csrDemoEntry.error)}
+              title="SDK CSR demo failed"
+            />
           </div>
         ) : null}
       </section>
 
-      <div className="mt-8 grid gap-6 xl:grid-cols-3">
+      <div className="mt-8 grid gap-6 xl:grid-cols-2">
         <section className="border border-slate-200 bg-white p-5 shadow-sm">
           <div className="flex items-center justify-between gap-3">
-            <h2 className="text-lg font-semibold text-slate-950">Posts section</h2>
+            <h2 className="text-lg font-semibold text-slate-950">
+              SSR Redux snapshot
+            </h2>
             <span className="text-xs uppercase tracking-wide text-slate-500">
-              <code>PostsApi</code>
+              <code>server-rendered</code>
             </span>
           </div>
+          <p className="mt-2 text-sm text-slate-600">
+            {ssrDemoEntry.status === "ready"
+              ? "This data was fetched on the server and then hydrated into Redux."
+              : "No server snapshot loaded yet."}
+          </p>
+
           <div className="mt-4 grid gap-3">
-            {posts.map((post) => (
-              <article key={post.id} className="border border-slate-200 bg-slate-50 p-3">
+            {ssrDemoEntry.data?.posts.map((post) => (
+              <article
+                key={post.id}
+                className="border border-slate-200 bg-slate-50 p-3"
+              >
                 <p className="text-xs font-semibold text-teal-700">
                   Post #{post.id} - User {post.userId}
                 </p>
                 <h3 className="mt-1 text-sm font-semibold text-slate-950">
                   {post.title}
                 </h3>
-                <p className="mt-2 text-sm leading-6 text-slate-700">{post.body}</p>
+                <p className="mt-2 text-sm leading-6 text-slate-700">
+                  {post.body}
+                </p>
               </article>
             ))}
-            {status === "loading" ? (
-              <p className="text-sm text-slate-500">Loading posts from the SDK...</p>
-            ) : null}
-          </div>
-        </section>
-
-        <section className="border border-slate-200 bg-white p-5 shadow-sm">
-          <div className="flex items-center justify-between gap-3">
-            <h2 className="text-lg font-semibold text-slate-950">Users section</h2>
-            <span className="text-xs uppercase tracking-wide text-slate-500">
-              <code>UsersApi</code>
-            </span>
-          </div>
-          <div className="mt-4 grid gap-3">
-            {users.map((user) => (
-              <article key={user.id} className="border border-slate-200 bg-slate-50 p-3">
-                <p className="text-xs font-semibold text-teal-700">@{user.username}</p>
+            {ssrDemoEntry.data?.users.map((user) => (
+              <article
+                key={user.id}
+                className="border border-slate-200 bg-slate-50 p-3"
+              >
+                <p className="text-xs font-semibold text-teal-700">
+                  @{user.username}
+                </p>
                 <h3 className="mt-1 text-sm font-semibold text-slate-950">
                   {user.name}
                 </h3>
@@ -185,22 +204,11 @@ export function SdkCsrDemo() {
                 <p className="mt-2 text-sm text-slate-600">{user.company.name}</p>
               </article>
             ))}
-            {status === "loading" ? (
-              <p className="text-sm text-slate-500">Loading users from the SDK...</p>
-            ) : null}
-          </div>
-        </section>
-
-        <section className="border border-slate-200 bg-white p-5 shadow-sm">
-          <div className="flex items-center justify-between gap-3">
-            <h2 className="text-lg font-semibold text-slate-950">Albums section</h2>
-            <span className="text-xs uppercase tracking-wide text-slate-500">
-              <code>AlbumsApi</code>
-            </span>
-          </div>
-          <div className="mt-4 grid gap-3">
-            {albums.map((album) => (
-              <article key={album.id} className="border border-slate-200 bg-slate-50 p-3">
+            {ssrDemoEntry.data?.albums.map((album) => (
+              <article
+                key={album.id}
+                className="border border-slate-200 bg-slate-50 p-3"
+              >
                 <p className="text-xs font-semibold text-teal-700">
                   Album #{album.id} - User {album.userId}
                 </p>
@@ -209,8 +217,80 @@ export function SdkCsrDemo() {
                 </h3>
               </article>
             ))}
-            {status === "loading" ? (
-              <p className="text-sm text-slate-500">Loading albums from the SDK...</p>
+            {!ssrDemoEntry.data ? (
+              <p className="text-sm text-slate-500">
+                No SSR data available yet.
+              </p>
+            ) : null}
+          </div>
+        </section>
+
+        <section className="border border-slate-200 bg-white p-5 shadow-sm">
+          <div className="flex items-center justify-between gap-3">
+            <h2 className="text-lg font-semibold text-slate-950">
+              CSR Redux snapshot
+            </h2>
+            <span className="text-xs uppercase tracking-wide text-slate-500">
+              <code>browser SDK</code>
+            </span>
+          </div>
+          <p className="mt-2 text-sm text-slate-600">
+            {csrDemoEntry.status === "loading"
+              ? "Loading CSR data from the browser SDK..."
+              : csrDemoEntry.status === "ready"
+                ? "CSR data is stored in Redux and can be reused across the app."
+                : "Refresh to load the CSR data."}
+          </p>
+
+          <div className="mt-4 grid gap-3">
+            {csrDemoEntry.data?.posts.map((post) => (
+              <article
+                key={post.id}
+                className="border border-slate-200 bg-slate-50 p-3"
+              >
+                <p className="text-xs font-semibold text-teal-700">
+                  Post #{post.id} - User {post.userId}
+                </p>
+                <h3 className="mt-1 text-sm font-semibold text-slate-950">
+                  {post.title}
+                </h3>
+                <p className="mt-2 text-sm leading-6 text-slate-700">
+                  {post.body}
+                </p>
+              </article>
+            ))}
+            {csrDemoEntry.data?.users.map((user) => (
+              <article
+                key={user.id}
+                className="border border-slate-200 bg-slate-50 p-3"
+              >
+                <p className="text-xs font-semibold text-teal-700">
+                  @{user.username}
+                </p>
+                <h3 className="mt-1 text-sm font-semibold text-slate-950">
+                  {user.name}
+                </h3>
+                <p className="mt-1 text-sm text-slate-700">{user.email}</p>
+                <p className="mt-2 text-sm text-slate-600">{user.company.name}</p>
+              </article>
+            ))}
+            {csrDemoEntry.data?.albums.map((album) => (
+              <article
+                key={album.id}
+                className="border border-slate-200 bg-slate-50 p-3"
+              >
+                <p className="text-xs font-semibold text-teal-700">
+                  Album #{album.id} - User {album.userId}
+                </p>
+                <h3 className="mt-1 text-sm font-semibold text-slate-950">
+                  {album.title}
+                </h3>
+              </article>
+            ))}
+            {!csrDemoEntry.data ? (
+              <p className="text-sm text-slate-500">
+                No CSR data stored yet.
+              </p>
             ) : null}
           </div>
         </section>

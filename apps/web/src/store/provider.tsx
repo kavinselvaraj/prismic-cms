@@ -1,10 +1,12 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { Provider } from "react-redux";
+import { hydrateBookingState } from "@/features/booking/store/booking.slice";
 import { makeStore, type AppStore } from "./index";
 import { loadPersistedStoreState, persistStoreState } from "./persist";
+import { hydrateJsonPlaceholderDemoState } from "./slices/jsonplaceholder-demo.slice";
 import { hydrateLabelsState } from "./slices/labels.slice";
 
 type StoreProviderProps = {
@@ -14,7 +16,6 @@ type StoreProviderProps = {
 export function StoreProvider({ children }: StoreProviderProps) {
   const storeRef = useRef<AppStore | null>(null);
   const hasHydratedRef = useRef(false);
-  const [isHydrated, setIsHydrated] = useState(false);
 
   if (!storeRef.current) {
     const store = makeStore();
@@ -32,17 +33,24 @@ export function StoreProvider({ children }: StoreProviderProps) {
   useEffect(() => {
     const persistedStoreState = loadPersistedStoreState();
 
+    if (persistedStoreState?.booking && storeRef.current) {
+      storeRef.current.dispatch(hydrateBookingState(persistedStoreState.booking));
+    }
+
     if (persistedStoreState?.labels && storeRef.current) {
       storeRef.current.dispatch(hydrateLabelsState(persistedStoreState.labels));
     }
 
-    hasHydratedRef.current = true;
-    setIsHydrated(true);
-  }, []);
+    if (persistedStoreState?.jsonPlaceholderDemo && storeRef.current) {
+      storeRef.current.dispatch(
+        hydrateJsonPlaceholderDemoState(
+          persistedStoreState.jsonPlaceholderDemo,
+        ),
+      );
+    }
 
-  if (!isHydrated) {
-    return null;
-  }
+    hasHydratedRef.current = true;
+  }, []);
 
   return <Provider store={storeRef.current}>{children}</Provider>;
 }

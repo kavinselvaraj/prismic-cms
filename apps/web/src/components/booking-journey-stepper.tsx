@@ -16,25 +16,24 @@ type BookingStep = {
 
 const bookingSteps: BookingStep[] = [
   { id: "select-flight", href: "/flight-search", label: "Select Flight" },
-  { id: "package-selection", href: null, label: "Package Selection" },
-  { id: "ancillary-selection", href: null, label: "Ancillary Selection" },
-  { id: "other-ancillaries", href: null, label: "Other Ancillaries" },
   {
-    id: "passenger-information",
-    href: "/passenger",
-    label: "Passenger Information",
+    id: "flight-selection",
+    href: "/flight-selection",
+    label: "Flight Selection",
   },
-  { id: "insurance", href: null, label: "Insurance" },
-  {
-    id: "reservation-confirmation",
-    href: "/flight-select",
-    label: "Reservation Confirmation",
-  },
+  { id: "package-selection", href: "/package-selection", label: "Packages" },
+  { id: "ancillary-selection", href: "/ancillary-services", label: "Ancillaries" },
+  { id: "customer-information", href: "/customer-information", label: "Customer Info" },
+  { id: "confirmation", href: "/confirmation", label: "Confirmation" },
 ];
 
 const routeStepIndexMap: Array<{ pattern: RegExp; stepIndex: number }> = [
-  { pattern: /\/flight-select(?:\/|$)/, stepIndex: 0 },
-  { pattern: /\/passenger(?:\/|$)/, stepIndex: 4 },
+  { pattern: /\/flight-search(?:\/|$)/, stepIndex: 0 },
+  { pattern: /\/flight-selection(?:\/|$)/, stepIndex: 1 },
+  { pattern: /\/package-selection(?:\/|$)/, stepIndex: 2 },
+  { pattern: /\/ancillary-services(?:\/|$)/, stepIndex: 3 },
+  { pattern: /\/customer-information(?:\/|$)/, stepIndex: 4 },
+  { pattern: /\/confirmation(?:\/|$)/, stepIndex: 5 },
 ];
 
 /**

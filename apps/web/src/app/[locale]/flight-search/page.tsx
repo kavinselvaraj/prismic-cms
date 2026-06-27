@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { LocalizedLabels } from "@/components/localized-labels";
+import { FlightSearchForm } from "@/features/booking/components/flight-search-form";
 import type { AppLocale } from "@/i18n/routing";
 
 type PageProps = {
@@ -15,8 +15,8 @@ export async function generateMetadata({
     title: "Flight Search",
     description: "Flight search page",
     robots: {
-      index: false,
       follow: true,
+      index: false,
     },
   };
 }
@@ -24,5 +24,5 @@ export async function generateMetadata({
 export default async function FlightSearchPage({ params }: PageProps) {
   const { locale } = await params;
 
-  return <LocalizedLabels locale={locale} page="flight-search" />;
+  return <FlightSearchForm locale={locale} />;
 }

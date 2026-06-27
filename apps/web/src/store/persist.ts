@@ -20,6 +20,8 @@ export function loadPersistedStoreState() {
 
 export function persistStoreState(state: RootReducerState) {
   const persistedState: Partial<RootReducerState> = {
+    booking: state.booking,
+    jsonPlaceholderDemo: state.jsonPlaceholderDemo,
     labels: state.labels,
   };
 

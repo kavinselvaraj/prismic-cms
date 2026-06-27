@@ -36,10 +36,14 @@ export default async function LocaleLayout({
         <nav style={{ display: "flex", gap: "16px" }}>
           <Link href={`/${locale}`}>Landing</Link>
           <Link href={`/${locale}/flight-search`}>Flight Search</Link>
-          <Link href={`/${locale}/flight-select`}>Flight Selection</Link>
-          <Link href={`/${locale}/passenger`}>Passenger</Link>
+          <Link href={`/${locale}/flight-selection`}>Flight Selection</Link>
+          <Link href={`/${locale}/package-selection`}>Packages</Link>
+          <Link href={`/${locale}/ancillary-services`}>Ancillaries</Link>
+          <Link href={`/${locale}/customer-information`}>Customer Info</Link>
+          <Link href={`/${locale}/confirmation`}>Confirmation</Link>
           <Link href={`/${locale}/country-demo`}>Country Demo</Link>
           <Link href={`/${locale}/sdk-csr-demo`}>SDK CSR Demo</Link>
+          <Link href={`/${locale}/sdk-ssr-demo`}>SDK SSR Demo</Link>
           <Link href={`/${locale}/sdk-error-scenarios`}>
             SDK Error Scenarios
           </Link>
