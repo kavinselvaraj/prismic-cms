@@ -20,3 +20,11 @@ export function createSecurityTokenCookieOptions() {
     secure: process.env.NODE_ENV === "production",
   };
 }
+
+export function createSecurityTokenClearedCookieOptions() {
+  return {
+    ...createSecurityTokenCookieOptions(),
+    expires: new Date(0),
+    maxAge: 0,
+  };
+}

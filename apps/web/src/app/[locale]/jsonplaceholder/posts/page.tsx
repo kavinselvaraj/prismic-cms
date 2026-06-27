@@ -47,9 +47,11 @@ export default async function JsonPlaceholderPostsPage() {
             }}
           >
             <p style={{ color: "#0f766e", fontSize: "13px", margin: 0 }}>
-              Post #{post.id} · User {post.userId}
+              Post #{post.id} - User {post.userId}
             </p>
-            <h2 style={{ fontSize: "18px", margin: "10px 0" }}>{post.title}</h2>
+            <h2 style={{ fontSize: "18px", margin: "10px 0" }}>
+              {post.title}
+            </h2>
             <p style={{ color: "#475569", lineHeight: 1.5, margin: 0 }}>
               {post.body}
             </p>

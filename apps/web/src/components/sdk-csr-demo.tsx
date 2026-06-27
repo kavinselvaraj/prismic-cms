@@ -1,12 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   AlbumsApi,
   PostsApi,
   UsersApi,
   createSdkClientContext,
 } from "@repo/sdk";
+import { handleUnauthorizedSdkResponse } from "@/security/security-token.client";
+import { AppErrorFallback } from "./app-error-fallback";
 
 type DemoStatus = "idle" | "loading" | "ready" | "error";
 
@@ -37,20 +39,25 @@ const jsonPlaceholderBaseUrl =
   process.env.NEXT_PUBLIC_JSONPLACEHOLDER_BASE_URL ??
   "https://jsonplaceholder.typicode.com";
 
-const sdkContext = createSdkClientContext({
-  baseUrl: jsonPlaceholderBaseUrl,
-});
-
-const postsApi = sdkContext.getApi(PostsApi);
-const usersApi = sdkContext.getApi(UsersApi);
-const albumsApi = sdkContext.getApi(AlbumsApi);
-
 export function SdkCsrDemo() {
   const [status, setStatus] = useState<DemoStatus>("idle");
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [error, setError] = useState<unknown>(null);
   const [posts, setPosts] = useState<JsonPlaceholderPost[]>([]);
   const [users, setUsers] = useState<JsonPlaceholderUser[]>([]);
   const [albums, setAlbums] = useState<JsonPlaceholderAlbum[]>([]);
+
+  const { albumsApi, postsApi, usersApi } = useMemo(() => {
+    const sdkContext = createSdkClientContext({
+      baseUrl: jsonPlaceholderBaseUrl,
+      onUnauthorized: handleUnauthorizedSdkResponse,
+    });
+
+    return {
+      albumsApi: sdkContext.getApi(AlbumsApi),
+      postsApi: sdkContext.getApi(PostsApi),
+      usersApi: sdkContext.getApi(UsersApi),
+    };
+  }, []);
 
   useEffect(() => {
     void loadDemoData();
@@ -59,7 +66,7 @@ export function SdkCsrDemo() {
   async function loadDemoData() {
     try {
       setStatus("loading");
-      setErrorMessage(null);
+      setError(null);
 
       const [nextPosts, nextUsers, nextAlbums] = await Promise.all([
         postsApi.listPosts({}),
@@ -73,7 +80,7 @@ export function SdkCsrDemo() {
       setStatus("ready");
     } catch (error) {
       setStatus("error");
-      setErrorMessage(error instanceof Error ? error.message : "SDK CSR demo failed.");
+      setError(error);
     }
   }
 
@@ -127,10 +134,10 @@ export function SdkCsrDemo() {
             generated SDK in the browser.
           </span>
         </div>
-        {errorMessage ? (
-          <p className="mt-4 border border-rose-200 bg-rose-50 p-3 text-sm text-rose-800">
-            {errorMessage}
-          </p>
+        {error ? (
+          <div className="mt-4">
+            <AppErrorFallback error={error} title="SDK CSR demo failed" />
+          </div>
         ) : null}
       </section>
 
@@ -146,7 +153,7 @@ export function SdkCsrDemo() {
             {posts.map((post) => (
               <article key={post.id} className="border border-slate-200 bg-slate-50 p-3">
                 <p className="text-xs font-semibold text-teal-700">
-                  Post #{post.id} · User {post.userId}
+                  Post #{post.id} - User {post.userId}
                 </p>
                 <h3 className="mt-1 text-sm font-semibold text-slate-950">
                   {post.title}
@@ -195,7 +202,7 @@ export function SdkCsrDemo() {
             {albums.map((album) => (
               <article key={album.id} className="border border-slate-200 bg-slate-50 p-3">
                 <p className="text-xs font-semibold text-teal-700">
-                  Album #{album.id} · User {album.userId}
+                  Album #{album.id} - User {album.userId}
                 </p>
                 <h3 className="mt-1 text-sm font-semibold text-slate-950">
                   {album.title}
