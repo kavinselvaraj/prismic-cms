@@ -1,13 +1,22 @@
+import { SliceZone } from "@prismicio/react";
+import { SliceSimulator, getSlices } from "@slicemachine/adapter-next/simulator";
 import { prismicSliceComponents } from "@repo/cms";
 
-export default function SliceSimulatorPage() {
+type SliceSimulatorPageProps = {
+  searchParams: Promise<{
+    state?: string;
+  }>;
+};
+
+export default async function SliceSimulatorPage({
+  searchParams,
+}: SliceSimulatorPageProps) {
+  const { state } = await searchParams;
+  const slices = getSlices(state);
+
   return (
-    <main>
-      <h1>Slice Simulator</h1>
-      <p>
-        Configured slice components:{" "}
-        {Object.keys(prismicSliceComponents).join(", ")}
-      </p>
-    </main>
+    <SliceSimulator>
+      <SliceZone slices={slices} components={prismicSliceComponents} />
+    </SliceSimulator>
   );
 }

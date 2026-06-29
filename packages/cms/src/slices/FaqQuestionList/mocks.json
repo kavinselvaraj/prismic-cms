@@ -1,32 +1,58 @@
 [
-  {
-    "__TYPE__": "SharedSliceContent",
-    "variation": "default",
-    "primary": {
-      "heading": [
-        {
-          "type": "heading2",
-          "text": "Network and Timetable",
-          "spans": []
-        }
-      ],
-      "description": [
-        {
-          "type": "paragraph",
-          "text": "Select a question to open the detailed answer page.",
-          "spans": []
-        }
-      ]
-    },
-    "items": [
-      {
-        "question": "Where does ZIPAIR fly to?",
-        "href": "/en/where-does-zipair-fly-to"
-      },
-      {
-        "question": "Where can I check the flight status?",
-        "href": "/en/flight-status"
-      }
-    ]
-  }
+	{
+		"__TYPE__": "SharedSliceContent",
+		"variation": "default",
+		"primary": {
+			"heading": {
+				"__TYPE__": "StructuredTextContent",
+				"value": [
+					{
+						"type": "heading2",
+						"content": {
+							"text": "Heading",
+							"spans": []
+						},
+						"direction": "ltr"
+					}
+				]
+			},
+			"description": {
+				"__TYPE__": "StructuredTextContent",
+				"value": [
+					{
+						"type": "paragraph",
+						"content": {
+							"text": "Description",
+							"spans": []
+						},
+						"direction": "ltr"
+					}
+				]
+			}
+		},
+		"items": [
+			{
+				"__TYPE__": "GroupItemContent",
+				"value": [
+					[
+						"question",
+						{
+							"__TYPE__": "FieldContent",
+							"type": "Text",
+							"value": "Question"
+						}
+					],
+					[
+						"href",
+						{
+							"__TYPE__": "FieldContent",
+							"type": "Text",
+							"value": "Href"
+						}
+					]
+				],
+				"key": "0f020d7c-fc94-4afc-ba8f-ffb81f3be735"
+			}
+		]
+	}
 ]
