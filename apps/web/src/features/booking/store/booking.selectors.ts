@@ -19,14 +19,16 @@ export const selectSelectedReturnFlight = (state: RootState) =>
 export const selectPassengerNames = (state: RootState) =>
   state.booking.passengerNames;
 
-export const selectBundleSelection = (state: RootState) => state.booking.bundles;
+export const selectBundleSelection = (state: RootState) =>
+  state.booking.bundles;
 
 export const selectSeatSelection = (state: RootState) => state.booking.seats;
 
 export const selectAncillarySelection = (state: RootState) =>
   state.booking.ancillaries;
 
-export const selectServiceSelection = (state: RootState) => state.booking.services;
+export const selectServiceSelection = (state: RootState) =>
+  state.booking.services;
 
 export const selectCustomerInformation = (state: RootState) =>
   state.booking.customerInformation;
@@ -55,4 +57,5 @@ export const selectCanAccessCustomerInformation = (state: RootState) =>
   hasBundleSelectionForPassengers(state.booking);
 
 export const selectCanAccessConfirmation = (state: RootState) =>
-  selectCanAccessCustomerInformation(state) && hasCustomerInformation(state.booking);
+  selectCanAccessCustomerInformation(state) &&
+  hasCustomerInformation(state.booking);

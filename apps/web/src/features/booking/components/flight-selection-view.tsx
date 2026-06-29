@@ -1,14 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import type { AppLocale } from "@/i18n/routing";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useRouter } from "next/navigation";
+import { useMemo, useState } from "react";
 import { mockFlights } from "../data/booking.mock";
-import {
-  initializePassengersFromSearch,
-  setPassengerNames,
-  setSelectedOutboundFlight,
-  setSelectedReturnFlight,
-} from "../store/booking.slice";
 import {
   selectCanAccessFlightSelection,
   selectFlightSearch,
@@ -16,12 +12,20 @@ import {
   selectSelectedOutboundFlight,
   selectSelectedReturnFlight,
 } from "../store/booking.selectors";
-import type { PassengerName, SegmentType, SelectedFlight } from "../types/booking.types";
+import {
+  initializePassengersFromSearch,
+  setPassengerNames,
+  setSelectedOutboundFlight,
+  setSelectedReturnFlight,
+} from "../store/booking.slice";
+import type {
+  PassengerName,
+  SegmentType,
+  SelectedFlight,
+} from "../types/booking.types";
 import { getFlightsBySegment, isRoundTrip } from "../utils/booking.helpers";
 import { BookingRouteGuard } from "./booking-route-guard";
 import { PassengerNameModal } from "./passenger-name-modal";
-import type { AppLocale } from "@/i18n/routing";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
 
 type FlightSelectionViewProps = {
   locale: AppLocale;
@@ -60,8 +64,8 @@ export function FlightSelectionView({ locale }: FlightSelectionViewProps) {
     }
 
     setError(null);
-    if (passengerNames.length === 0) {
-      dispatch(initializePassengersFromSearch());
+    if (passengerNames.length === 0 && search) {
+      dispatch(initializePassengersFromSearch(search));
     }
     setIsPassengerModalOpen(true);
   }

@@ -1,44 +1,55 @@
 "use client";
 
-import { useEffect } from "react";
-import { useForm, type UseFormRegisterReturn } from "react-hook-form";
+import type { AppLocale } from "@/i18n/routing";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useRouter } from "next/navigation";
+import { useEffect, useMemo } from "react";
+import { type UseFormRegisterReturn, useForm } from "react-hook-form";
 import {
-  customerInformationSchema,
   type CustomerInformationFormValues,
+  customerInformationSchema,
 } from "../schemas/booking.schemas";
 import { createZodFormResolver } from "../schemas/zod-form-resolver";
 import {
-  buildConfirmationPayload,
-  initializeCustomerInformationFromPassengers,
-  updateCustomerInformation,
-} from "../store/booking.slice";
-import {
+  selectBookingState,
   selectCanAccessCustomerInformation,
   selectCustomerInformation,
   selectPassengerNames,
 } from "../store/booking.selectors";
+import {
+  buildConfirmationPayload,
+  initializeCustomerInformationFromPassengers,
+  setCustomerInformation,
+} from "../store/booking.slice";
 import type { CustomerInformationState } from "../types/booking.types";
+import { buildCreateBookingRequest } from "../utils/booking.helpers";
 import { BookingRouteGuard } from "./booking-route-guard";
 import { FieldError } from "./field-error";
-import type { AppLocale } from "@/i18n/routing";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
 
 type CustomerInformationViewProps = {
   locale: AppLocale;
 };
 
-export function CustomerInformationView({ locale }: CustomerInformationViewProps) {
+export function CustomerInformationView({
+  locale,
+}: CustomerInformationViewProps) {
   const dispatch = useAppDispatch();
   const router = useRouter();
+  const booking = useAppSelector(selectBookingState);
   const canAccess = useAppSelector(selectCanAccessCustomerInformation);
   const customerInformation = useAppSelector(selectCustomerInformation);
   const passengerNames = useAppSelector(selectPassengerNames);
-  const customers = passengerNames
-    .map((passenger) =>
-      customerInformation.find((customer) => customer.passengerId === passenger.id),
-    )
-    .filter(isCustomerInformationState);
+  const customers = useMemo(
+    () =>
+      passengerNames
+        .map((passenger) =>
+          customerInformation.find(
+            (customer) => customer.passengerId === passenger.id,
+          ),
+        )
+        .filter(isCustomerInformationState),
+    [customerInformation, passengerNames],
+  );
 
   const {
     formState: { errors },
@@ -53,19 +64,26 @@ export function CustomerInformationView({ locale }: CustomerInformationViewProps
   });
 
   useEffect(() => {
-    dispatch(initializeCustomerInformationFromPassengers());
-  }, [dispatch]);
+    dispatch(initializeCustomerInformationFromPassengers(passengerNames));
+  }, [dispatch, passengerNames]);
 
   useEffect(() => {
     reset({ customers });
-  }, [customers.length, reset]);
+  }, [customers, reset]);
 
   function onSubmit(values: CustomerInformationFormValues) {
-    for (const customer of values.customers) {
-      dispatch(updateCustomerInformation(customer as CustomerInformationState));
-    }
+    const nextCustomerInformation =
+      values.customers as CustomerInformationState[];
 
-    dispatch(buildConfirmationPayload());
+    dispatch(setCustomerInformation(nextCustomerInformation));
+    dispatch(
+      buildConfirmationPayload(
+        buildCreateBookingRequest({
+          ...booking,
+          customerInformation: nextCustomerInformation,
+        }),
+      ),
+    );
     router.push(`/${locale}/confirmation`);
   }
 
@@ -93,7 +111,10 @@ export function CustomerInformationView({ locale }: CustomerInformationViewProps
               className="grid gap-5 border border-slate-200 bg-white p-5 shadow-sm"
               key={customer.passengerId}
             >
-              <input type="hidden" {...register(`customers.${index}.passengerId`)} />
+              <input
+                type="hidden"
+                {...register(`customers.${index}.passengerId`)}
+              />
               <h2 className="text-xl font-semibold text-slate-950">
                 Passenger {customer.passengerId}:{" "}
                 {customer.passengerInformation.firstName}{" "}
@@ -242,7 +263,11 @@ function TextField({ label, registration, type = "text" }: FieldProps) {
   return (
     <label className="grid gap-2">
       <span className="text-sm font-medium text-slate-800">{label}</span>
-      <input className="border border-slate-300 p-3" type={type} {...registration} />
+      <input
+        className="border border-slate-300 p-3"
+        type={type}
+        {...registration}
+      />
     </label>
   );
 }

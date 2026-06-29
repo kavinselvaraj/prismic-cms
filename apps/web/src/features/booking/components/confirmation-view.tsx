@@ -1,18 +1,16 @@
 "use client";
 
+import type { AppLocale } from "@/i18n/routing";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useState } from "react";
-import {
-  buildConfirmationPayload,
-} from "../store/booking.slice";
 import {
   selectBookingState,
   selectCanAccessConfirmation,
   selectConfirmationPayload,
 } from "../store/booking.selectors";
+import { buildConfirmationPayload } from "../store/booking.slice";
 import { buildCreateBookingRequest } from "../utils/booking.helpers";
 import { BookingRouteGuard } from "./booking-route-guard";
-import type { AppLocale } from "@/i18n/routing";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
 
 type ConfirmationViewProps = {
   locale: AppLocale;
@@ -23,18 +21,19 @@ export function ConfirmationView({ locale }: ConfirmationViewProps) {
   const booking = useAppSelector(selectBookingState);
   const canAccess = useAppSelector(selectCanAccessConfirmation);
   const storedPayload = useAppSelector(selectConfirmationPayload);
-  const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">(
-    "idle",
-  );
+  const [status, setStatus] = useState<
+    "idle" | "submitting" | "success" | "error"
+  >("idle");
   const [message, setMessage] = useState<string | null>(null);
-  const payload = storedPayload ?? (canAccess ? buildCreateBookingRequest(booking) : null);
+  const payload =
+    storedPayload ?? (canAccess ? buildCreateBookingRequest(booking) : null);
 
   async function confirmBooking() {
     if (!payload) {
       return;
     }
 
-    dispatch(buildConfirmationPayload());
+    dispatch(buildConfirmationPayload(payload));
     setStatus("submitting");
     setMessage(null);
 
@@ -48,14 +47,18 @@ export function ConfirmationView({ locale }: ConfirmationViewProps) {
       });
 
       if (!response.ok) {
-        throw new Error(`Confirm booking failed with status ${response.status}`);
+        throw new Error(
+          `Confirm booking failed with status ${response.status}`,
+        );
       }
 
       setStatus("success");
       setMessage("Booking request submitted successfully.");
     } catch (error) {
       setStatus("error");
-      setMessage(error instanceof Error ? error.message : "Unable to confirm booking.");
+      setMessage(
+        error instanceof Error ? error.message : "Unable to confirm booking.",
+      );
     }
   }
 

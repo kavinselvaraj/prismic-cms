@@ -140,6 +140,41 @@ export type CustomerInformationState = {
   };
 };
 
+export type FlightSearchPageState = {
+  search: FlightSearchState | null;
+};
+
+export type FlightSelectionPageState = {
+  selectedOutboundFlight: SelectedFlight | null;
+  selectedReturnFlight: SelectedFlight | null;
+};
+
+export type PassengerPageState = {
+  passengerNames: PassengerName[];
+};
+
+export type PackageSelectionPageState = {
+  bundles: PassengerBundleSelectionState[];
+};
+
+export type AncillaryServicesPageState = {
+  ancillaries: PassengerAncillarySelectionState[];
+  seats: PassengerSeatSelectionState[];
+  services: PassengerServiceSelectionState[];
+};
+
+export type CustomerInformationPageState = {
+  customerInformation: CustomerInformationState[];
+};
+
+export type ConfirmationPageState = {
+  confirmationPayload: CreateBookingRequest | null;
+};
+
+export type BookingFlowState = {
+  currentStep: BookingStep;
+};
+
 export type CreateBookingRequest = {
   passengers: BookingPassengerRequest[];
   search: FlightSearchRequest;
@@ -240,16 +275,11 @@ export type PassengerServiceRequest = FlightItemBaseRequest & {
   serviceType: ServiceType;
 };
 
-export type BookingState = {
-  ancillaries: PassengerAncillarySelectionState[];
-  bundles: PassengerBundleSelectionState[];
-  confirmationPayload: CreateBookingRequest | null;
-  currentStep: BookingStep;
-  customerInformation: CustomerInformationState[];
-  passengerNames: PassengerName[];
-  search: FlightSearchState | null;
-  seats: PassengerSeatSelectionState[];
-  selectedOutboundFlight: SelectedFlight | null;
-  selectedReturnFlight: SelectedFlight | null;
-  services: PassengerServiceSelectionState[];
-};
+export type BookingState = FlightSearchPageState &
+  FlightSelectionPageState &
+  PassengerPageState &
+  PackageSelectionPageState &
+  AncillaryServicesPageState &
+  CustomerInformationPageState &
+  ConfirmationPageState &
+  BookingFlowState;
