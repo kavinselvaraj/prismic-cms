@@ -11,6 +11,7 @@
     "prismic:validate": "pnpm --filter prismic-app prismic:validate",
     "prismic:check": "pnpm --filter prismic-app prismic:check",
     "dev:passport-scan": "pnpm --filter passport-scan-service dev",
+    "dev:prismic-app": "pnpm --filter prismic-app dev",
     "dev:prismic": "pnpm --filter prismic-app dev",
     "dev:web": "pnpm --filter web dev",
     "format": "biome format --write .",

@@ -10,6 +10,7 @@ import type {
   PrismicDocumentMap,
   PrismicParentDocument,
 } from "../types/label.types";
+import type { CmsQueryOptions } from "../types/preview.types";
 
 /**
  * Creates an app-specific label service without coupling CMS runtime code to an app.
@@ -22,12 +23,15 @@ export function createLabelService<TMessages extends Record<string, unknown>>(
       ? (locale as keyof typeof options.localMessages & string)
       : options.defaultLocale;
 
-  async function getLabels(locale: string): Promise<TMessages> {
+  async function getLabels(
+    locale: string,
+    queryOptions?: CmsQueryOptions,
+  ): Promise<TMessages> {
     const resolvedLocale = resolveLocale(locale);
     const source = getServerLabelSource();
 
     if (source === "prismic") {
-      return loadFromPrismic(resolvedLocale);
+      return loadFromPrismic(resolvedLocale, queryOptions);
     }
 
     if (source === "backend") {
@@ -37,18 +41,26 @@ export function createLabelService<TMessages extends Record<string, unknown>>(
     return getLocalMessages(resolvedLocale);
   }
 
-  async function loadFromPrismic(locale: string): Promise<TMessages> {
+  async function loadFromPrismic(
+    locale: string,
+    queryOptions?: CmsQueryOptions,
+  ): Promise<TMessages> {
     try {
-      return await fetchPrismicLabels(locale);
+      return await fetchPrismicLabels(locale, queryOptions);
     } catch {
       return getLocalMessages(locale);
     }
   }
 
-  async function fetchPrismicLabels(locale: string): Promise<TMessages> {
+  async function fetchPrismicLabels(
+    locale: string,
+    queryOptions?: CmsQueryOptions,
+  ): Promise<TMessages> {
     const lang = options.prismicLocaleMap[locale] ?? locale;
     const repositoryName = getRepositoryName();
-    const client = createPrismicClient();
+    const client = createPrismicClient({
+      preview: queryOptions?.preview,
+    });
     const expectedDocumentTypes = getExpectedDocumentTypes(locale);
 
     // Parent type is selected from app runtime configuration, not a static SDK union.

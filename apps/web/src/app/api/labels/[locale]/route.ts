@@ -1,10 +1,11 @@
-import { NextResponse } from "next/server";
 import {
   getIbeLabels,
   getServerLabelSource,
   resolveLocale,
 } from "@/i18n/label-service-config";
 import { createLabelVersion } from "@/i18n/label-version";
+import { getCmsPreviewState } from "@/prismic/preview";
+import { NextResponse } from "next/server";
 
 type RouteContext = {
   params: Promise<{
@@ -23,7 +24,9 @@ export async function GET(_: Request, context: RouteContext) {
     source,
   });
 
-  const messages = await getIbeLabels(resolvedLocale);
+  const messages = await getIbeLabels(resolvedLocale, {
+    preview: await getCmsPreviewState(),
+  });
   const version = createLabelVersion(messages);
 
   return NextResponse.json({

@@ -2,33 +2,48 @@ import * as prismic from "@prismicio/client";
 import type { ContentPageDocument } from "../generated/prismicio-types";
 import { createPrismicClient } from "../prismic/create-client";
 import type { ContentPageBreadcrumbItem } from "../types/content-page.types";
+import type { CmsLocalizedQueryOptions } from "../types/preview.types";
 
 const localeMap: Record<string, string> = {
   en: "en-us",
   ja: "ja-jp",
 };
 
-export async function getContentPageDocumentByUid(params: {
-  locale: string;
-  uid: string;
-}): Promise<ContentPageDocument | null> {
-  const client = createPrismicClient();
-  const lang = localeMap[params.locale] ?? params.locale;
+export async function getContentPageDocumentByUid(
+  params: {
+    locale: string;
+    uid: string;
+  },
+  options?: CmsLocalizedQueryOptions,
+): Promise<ContentPageDocument | null> {
+  const client = createPrismicClient({
+    preview: options?.preview,
+  });
+  const languages = [
+    localeMap[params.locale] ?? params.locale,
+    ...(options?.fallbackLocales ?? []).map(
+      (locale) => localeMap[locale] ?? locale,
+    ),
+  ].filter((lang, index, items) => items.indexOf(lang) === index);
 
-  try {
-    return await client.getByUID("content_page", params.uid, {
-      lang,
-    });
-  } catch (error) {
-    if (
-      error instanceof prismic.PrismicError &&
-      error.url?.includes("documents/search")
-    ) {
-      return null;
+  for (const lang of languages) {
+    try {
+      return await client.getByUID("content_page", params.uid, {
+        lang,
+      });
+    } catch (error) {
+      if (
+        error instanceof prismic.PrismicError &&
+        error.url?.includes("documents/search")
+      ) {
+        continue;
+      }
+
+      throw error;
     }
-
-    throw error;
   }
+
+  return null;
 }
 
 export function getContentPageBreadcrumb(

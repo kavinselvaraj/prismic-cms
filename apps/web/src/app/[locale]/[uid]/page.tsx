@@ -1,13 +1,15 @@
-import Link from "next/link";
-import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import type { AppLocale } from "@/i18n/routing";
+import { routing } from "@/i18n/routing";
+import { getCmsPreviewState } from "@/prismic/preview";
 import { SliceZone } from "@prismicio/react";
 import {
   getContentPageBreadcrumb,
   getContentPageDocumentByUid,
   prismicSliceComponents,
 } from "@repo/cms";
-import type { AppLocale } from "@/i18n/routing";
+import type { Metadata } from "next";
+import Link from "next/link";
+import { notFound } from "next/navigation";
 
 type PageProps = {
   params: Promise<{
@@ -20,7 +22,14 @@ export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { locale, uid } = await params;
-  const page = await getContentPageDocumentByUid({ locale, uid });
+  const page = await getContentPageDocumentByUid(
+    { locale, uid },
+    {
+      fallbackLocales:
+        locale === routing.defaultLocale ? [] : [routing.defaultLocale],
+      preview: await getCmsPreviewState(),
+    },
+  );
 
   if (!page) {
     return {
@@ -38,7 +47,14 @@ export async function generateMetadata({
 
 export default async function ContentPage({ params }: PageProps) {
   const { locale, uid } = await params;
-  const page = await getContentPageDocumentByUid({ locale, uid });
+  const page = await getContentPageDocumentByUid(
+    { locale, uid },
+    {
+      fallbackLocales:
+        locale === routing.defaultLocale ? [] : [routing.defaultLocale],
+      preview: await getCmsPreviewState(),
+    },
+  );
 
   if (!page) {
     notFound();
@@ -76,7 +92,10 @@ export default async function ContentPage({ params }: PageProps) {
             const isLast = index === breadcrumb.length - 1;
 
             return (
-              <li key={`${item.label}-${index}`} className="flex items-center gap-2">
+              <li
+                key={`${item.label}-${index}`}
+                className="flex items-center gap-2"
+              >
                 <svg
                   aria-hidden="true"
                   className="h-4 w-4 text-slate-300"

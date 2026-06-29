@@ -1,5 +1,6 @@
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import { routing } from "@/i18n/routing";
+import { getCmsPreviewState } from "@/prismic/preview";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
@@ -16,6 +17,7 @@ export default async function LocaleLayout({
   params,
 }: LocaleLayoutProps) {
   const { locale } = await params;
+  const preview = await getCmsPreviewState();
 
   if (!routing.locales.includes(locale as "en")) {
     notFound();
@@ -23,6 +25,41 @@ export default async function LocaleLayout({
 
   return (
     <div style={{ padding: "24px" }}>
+      {preview.enabled ? (
+        <div
+          style={{
+            alignItems: "center",
+            background: "#fff7ed",
+            border: "1px solid #fdba74",
+            color: "#9a3412",
+            display: "flex",
+            flexWrap: "wrap",
+            gap: "12px",
+            justifyContent: "space-between",
+            marginBottom: "16px",
+            padding: "12px 16px",
+          }}
+        >
+          <div>
+            <strong>Preview mode is on.</strong>
+            {preview.ref ? (
+              <span style={{ marginLeft: "8px" }}>
+                Ref: <code>{preview.ref.slice(0, 18)}...</code>
+              </span>
+            ) : null}
+          </div>
+          <Link
+            href={`/api/exit-preview?redirect=/${locale}`}
+            style={{
+              color: "#9a3412",
+              fontWeight: 600,
+              textDecoration: "underline",
+            }}
+          >
+            Exit preview
+          </Link>
+        </div>
+      ) : null}
       <header
         style={{
           alignItems: "center",
