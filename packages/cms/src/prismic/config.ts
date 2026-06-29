@@ -72,12 +72,5 @@ function getEnvOverrides() {
 
   cachedEnvOverrides = overrides;
 
-  console.log("[cms-prismic] env:fallback", {
-    cwd,
-    hasPrismicRepository: Boolean(overrides.PRISMIC_REPOSITORY_NAME),
-    hasPrismicAccessToken: Boolean(overrides.PRISMIC_ACCESS_TOKEN),
-    labelSource: overrides.LABEL_SOURCE,
-  });
-
   return overrides;
 }

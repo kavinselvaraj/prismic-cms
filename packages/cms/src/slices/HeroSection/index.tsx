@@ -1,13 +1,4 @@
-type HeroSectionLabels = {
-  title?: string;
-  subtitle?: string;
-  primaryCta?: string;
-  secondaryCta?: string;
-};
-
-type HeroSectionProps = {
-  labels?: HeroSectionLabels;
-};
+import type { HeroSectionProps } from "../../types/slice.types";
 
 export function HeroSection({ labels }: HeroSectionProps) {
   return (

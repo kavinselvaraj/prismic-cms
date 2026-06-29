@@ -1,11 +1,4 @@
-type PopularRoutesLabels = {
-  title?: string;
-  viewAll?: string;
-};
-
-type PopularRoutesProps = {
-  labels?: PopularRoutesLabels;
-};
+import type { PopularRoutesProps } from "../../types/slice.types";
 
 export function PopularRoutes({ labels }: PopularRoutesProps) {
   return (

@@ -5,10 +5,15 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
+    "./client": "./src/client.ts",
     "./generated/prismicio-types": "./src/generated/prismicio-types.d.ts",
+    "./mappers": "./src/mappers/index.ts",
     "./prismic": "./src/prismic/index.ts",
+    "./queries": "./src/queries/index.ts",
     "./slices": "./src/slices/index.ts",
-    "./slices/*": "./src/slices/*/index.tsx"
+    "./slices/*": "./src/slices/*/index.tsx",
+    "./types": "./src/types/index.ts",
+    "./utils": "./src/utils/index.ts"
   },
   "scripts": {
     "lint": "biome check .",

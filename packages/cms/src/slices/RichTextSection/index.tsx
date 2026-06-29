@@ -1,8 +1,5 @@
-import { Content } from "@prismicio/client";
-import { PrismicRichText, SliceComponentProps } from "@prismicio/react";
-
-export type RichTextSectionProps =
-  SliceComponentProps<Content.RichTextSectionSlice>;
+import { PrismicRichText } from "@prismicio/react";
+import type { RichTextSectionProps } from "../../types/slice.types";
 
 export function RichTextSection({ slice }: RichTextSectionProps) {
   return (

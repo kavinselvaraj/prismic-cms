@@ -1,17 +1,18 @@
-import { FC } from "react";
-import { SliceComponentProps, PrismicRichText } from "@prismicio/react";
-
-export type FaqQuestionListProps = SliceComponentProps<any>;
+import { PrismicRichText } from "@prismicio/react";
+import type { FC } from "react";
+import type { FaqQuestionListProps } from "../../types/slice.types";
 
 const FaqQuestionList: FC<FaqQuestionListProps> = ({ slice }) => {
   const primary = (slice.primary ?? {}) as {
     description?: unknown;
     heading?: unknown;
   };
-  const items = ((slice.items ?? []) as Array<{
-    href?: string | null;
-    question?: string | null;
-  }>).filter((item) => item.question);
+  const items = (
+    (slice.items ?? []) as Array<{
+      href?: string | null;
+      question?: string | null;
+    }>
+  ).filter((item) => item.question);
 
   return (
     <section
@@ -33,7 +34,10 @@ const FaqQuestionList: FC<FaqQuestionListProps> = ({ slice }) => {
             href={item.href || "#"}
           >
             <span>{item.question}</span>
-            <span aria-hidden="true" className="text-3xl leading-none text-teal-700">
+            <span
+              aria-hidden="true"
+              className="text-3xl leading-none text-teal-700"
+            >
               &#8250;
             </span>
           </a>

@@ -1,10 +1,4 @@
-export type PrismicLabelDocument = {
-  modelId: string;
-  modelType: "page" | "custom";
-  content: Record<string, unknown>;
-  page?: string;
-  uid?: string;
-};
+import type { PrismicLabelDocument } from "../types/label.types";
 
 /**
  * Returns Prismic Custom Type IDs from an application's label document section.

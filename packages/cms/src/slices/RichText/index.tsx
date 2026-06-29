@@ -1,11 +1,5 @@
-import { FC } from "react";
-import { Content } from "@prismicio/client";
-import { SliceComponentProps } from "@prismicio/react";
-
-/**
- * Props for `RichText`.
- */
-export type RichTextProps = SliceComponentProps<Content.RichTextSlice>;
+import type { FC } from "react";
+import type { RichTextProps } from "../../types/slice.types";
 
 /**
  * Component for "RichText" Slices.

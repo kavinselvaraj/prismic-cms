@@ -1,7 +1,6 @@
-import { FC } from "react";
-import { SliceComponentProps, PrismicRichText } from "@prismicio/react";
-
-export type CtaBannerProps = SliceComponentProps<any>;
+import { PrismicRichText } from "@prismicio/react";
+import type { FC } from "react";
+import type { CtaBannerProps } from "../../types/slice.types";
 
 const CtaBanner: FC<CtaBannerProps> = ({ slice }) => {
   const primary = (slice.primary ?? {}) as {

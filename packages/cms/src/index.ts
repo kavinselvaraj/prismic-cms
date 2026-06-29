@@ -1,6 +1,11 @@
 export * from "./slices";
 export { components as prismicSliceComponents } from "./slices";
+export * from "./client";
+export * from "./mappers";
 export * from "./prismic";
+export * from "./queries";
 export * from "./services/content-page-service";
 export * from "./services/label-contract";
 export * from "./services/label-service";
+export * from "./types";
+export * from "./utils";

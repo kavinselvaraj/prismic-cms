@@ -1,16 +1,17 @@
-import { FC } from "react";
-import { SliceComponentProps, PrismicRichText } from "@prismicio/react";
-
-export type LinkGroupProps = SliceComponentProps<any>;
+import { PrismicRichText } from "@prismicio/react";
+import type { FC } from "react";
+import type { LinkGroupProps } from "../../types/slice.types";
 
 const LinkGroup: FC<LinkGroupProps> = ({ slice }) => {
   const primary = (slice.primary ?? {}) as {
     heading?: unknown;
   };
-  const items = ((slice.items ?? []) as Array<{
-    href?: string | null;
-    label?: string | null;
-  }>).filter((item) => item.label);
+  const items = (
+    (slice.items ?? []) as Array<{
+      href?: string | null;
+      label?: string | null;
+    }>
+  ).filter((item) => item.label);
 
   return (
     <section
