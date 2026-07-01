@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev -p 3001",
-    "slicemachine": "start-slicemachine",
+    "prismic:pull": "npx prismic pull && pnpm prismic:sync-slices && pnpm prismic:types:generate",
+    "prismic:sync-slices": "tsx scripts/sync-prismic-slices.ts",
     "prismic:types:generate": "prismic-ts-codegen",
     "prismic:models:generate": "tsx scripts/generate-prismic-models.ts",
     "prismic:seed": "tsx scripts/seed-prismic-content.ts --write",
@@ -21,12 +22,10 @@
     "@repo/cms": "workspace:*",
     "next": "^15.5.19",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0",
-    "slice-machine-ui": "^2.16.0"
+    "react-dom": "^19.1.0"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
-    "@slicemachine/adapter-next": "^0.3.88",
     "@types/node": "^22.15.29",
     "@types/react": "^19.1.6",
     "@types/react-dom": "^19.1.5",

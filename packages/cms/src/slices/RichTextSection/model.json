@@ -2,14 +2,14 @@
   "id": "rich_text_section",
   "type": "SharedSlice",
   "name": "RichTextSection",
-  "description": "Simple title and rich text content block",
   "variations": [
     {
       "id": "default",
       "name": "Default",
+      "description": "Default rich text section",
+      "imageUrl": "https://images.prismic.io/slice-machine/621a5ec4-0387-4bc5-9860-2dd46cbc07cd_default_ss.png?auto=compress,format",
       "docURL": "https://prismic.io/docs/slices",
       "version": "initial",
-      "description": "Default rich text section",
       "primary": {
         "title": {
           "type": "StructuredText",
@@ -28,5 +28,6 @@
       },
       "items": {}
     }
-  ]
+  ],
+  "description": "Simple title and rich text content block"
 }

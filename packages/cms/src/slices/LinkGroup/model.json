@@ -2,14 +2,14 @@
   "id": "link_group",
   "type": "SharedSlice",
   "name": "LinkGroup",
-  "description": "Heading with a list of links",
   "variations": [
     {
       "id": "default",
       "name": "Default",
+      "description": "Reusable group of related links",
+      "imageUrl": "https://images.prismic.io/slice-machine/621a5ec4-0387-4bc5-9860-2dd46cbc07cd_default_ss.png?auto=compress,format",
       "docURL": "https://prismic.io/docs/slices",
       "version": "initial",
-      "description": "Reusable group of related links",
       "primary": {
         "heading": {
           "type": "StructuredText",
@@ -34,5 +34,6 @@
         }
       }
     }
-  ]
+  ],
+  "description": "Heading with a list of links"
 }

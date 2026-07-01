@@ -1,4 +1,9 @@
 {
   "repositoryName": "next-js-ssr",
-  "adapter": "@slicemachine/adapter-next"
+  "routes": [
+    {
+      "type": "home_page",
+      "path": "/home-page"
+    }
+  ]
 }

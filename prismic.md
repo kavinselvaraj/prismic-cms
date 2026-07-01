@@ -29,17 +29,17 @@ fall back to local JSON during development.
 
 ### `apps/prismic-app`
 
-The Prismic app owns Slice Machine, custom type files, and write/migration
-utilities.
+The Prismic app owns Prismic CLI configuration, custom type files, and
+write/migration utilities.
 
 ```txt
 apps/prismic-app/customtypes/
-apps/prismic-app/slicemachine.config.json
+apps/prismic-app/prismic.config.json
 apps/prismic-app/src/prismic/
 ```
 
-One CMS owner should run Slice Machine, sync custom types, and seed/configure
-Prismic documents.
+One CMS owner should use Prismic Type Builder in the web UI, then seed or
+configure Prismic documents from this workspace.
 
 ### `packages/cms`
 
@@ -59,15 +59,13 @@ inside `packages/cms`.
 3. The developer runs `pnpm cms:check`.
 4. The CMS owner runs `pnpm cms:generate`.
 5. The CMS owner reviews generated files under `apps/prismic-app/customtypes`.
-6. The CMS owner syncs the custom types in Slice Machine.
+6. The CMS owner manages the matching models in Prismic Type Builder.
 7. The CMS owner seeds initial content with `pnpm cms:seed` or edits it in Prismic.
 
 ## Commands
 
 ```bash
 pnpm dev:web
-pnpm dev:prismic
-pnpm slicemachine
 pnpm cms:generate
 pnpm cms:seed:dry
 pnpm cms:seed

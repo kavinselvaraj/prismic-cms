@@ -417,17 +417,9 @@ PRISMIC_PASSENGER_JA_DOCUMENT_ID=
 pnpm dev:web
 ```
 
-### Run Prismic app
+### Manage Prismic models
 
-```bash
-pnpm dev:prismic
-```
-
-### Open Slice Machine
-
-```bash
-pnpm slicemachine
-```
+Use Prismic Type Builder in the Prismic web UI.
 
 ### Generate Prismic models
 

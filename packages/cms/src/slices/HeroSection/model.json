@@ -2,14 +2,14 @@
   "id": "hero_section",
   "type": "SharedSlice",
   "name": "HeroSection",
-  "description": "Hero section with title, subtitle, and CTAs",
   "variations": [
     {
       "id": "default",
       "name": "Default",
+      "description": "Default hero section",
+      "imageUrl": "https://images.prismic.io/slice-machine/621a5ec4-0387-4bc5-9860-2dd46cbc07cd_default_ss.png?auto=compress,format",
       "docURL": "https://prismic.io/docs/slices",
       "version": "initial",
-      "description": "Default hero section",
       "primary": {
         "title": {
           "type": "StructuredText",
@@ -40,5 +40,6 @@
       },
       "items": {}
     }
-  ]
+  ],
+  "description": "Hero section with title, subtitle, and CTAs"
 }

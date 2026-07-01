@@ -95,14 +95,10 @@ Owns:
    pnpm prismic:types:generate
    ```
 
-7. Start the Prismic app and Slice Machine:
+7. Review the generated model and manage the matching content model in Prismic
+   Type Builder
 
-   ```bash
-   pnpm dev:prismic
-   pnpm slicemachine
-   ```
-
-8. Slice Machine syncs the model to Prismic
+8. Type Builder saves the model directly to Prismic
 9. Preview content migration:
 
    ```bash
@@ -159,17 +155,9 @@ Examples:
 - if you add a new tab or group, run it
 - if you only changed the value from `First name` to `Given name`, you do not need it
 
-### Start Prismic app
+### Manage models in Prismic
 
-```bash
-pnpm dev:prismic
-```
-
-### Start Slice Machine
-
-```bash
-pnpm slicemachine
-```
+Use Prismic Type Builder in the Prismic web UI.
 
 ### Preview content migration
 
@@ -720,12 +708,7 @@ pnpm prismic:validate
 
 ### Step 6
 
-Start Slice Machine:
-
-```bash
-pnpm dev:prismic
-pnpm slicemachine
-```
+Manage the matching model in Prismic Type Builder.
 
 ### Step 7
 
@@ -782,8 +765,6 @@ Commands:
 pnpm prismic:models:generate
 pnpm prismic:validate
 pnpm prismic:types:generate
-pnpm dev:prismic
-pnpm slicemachine
 ```
 
 ### Content migration
@@ -823,14 +804,9 @@ When you want to learn the migration process, do this exact sequence:
    pnpm prismic:types:generate
    ```
 
-6. Run:
+6. Open Prismic Type Builder and review the matching model
 
-   ```bash
-   pnpm dev:prismic
-   pnpm slicemachine
-   ```
-
-7. Push custom type changes in Slice Machine
+7. Save the custom type changes in Prismic
 8. Preview content write:
 
    ```bash

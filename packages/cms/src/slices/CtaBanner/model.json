@@ -2,14 +2,14 @@
   "id": "cta_banner",
   "type": "SharedSlice",
   "name": "CtaBanner",
-  "description": "Centered CTA button block",
   "variations": [
     {
       "id": "default",
       "name": "Default",
+      "description": "Call to action section for detail pages",
+      "imageUrl": "https://images.prismic.io/slice-machine/621a5ec4-0387-4bc5-9860-2dd46cbc07cd_default_ss.png?auto=compress,format",
       "docURL": "https://prismic.io/docs/slices",
       "version": "initial",
-      "description": "Call to action section for detail pages",
       "primary": {
         "body": {
           "type": "StructuredText",
@@ -33,5 +33,6 @@
       },
       "items": {}
     }
-  ]
+  ],
+  "description": "Centered CTA button block"
 }

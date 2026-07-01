@@ -4,6 +4,8 @@
   "private": true,
   "scripts": {
     "build": "turbo build",
+    "prismic:pull": "pnpm --filter prismic-app prismic:pull",
+    "prismic:sync-slices": "pnpm --filter prismic-app prismic:sync-slices",
     "prismic:types:generate": "pnpm --filter prismic-app prismic:types:generate",
     "prismic:models:generate": "pnpm --filter prismic-app prismic:models:generate",
     "prismic:seed": "pnpm --filter prismic-app prismic:seed",
@@ -11,13 +13,10 @@
     "prismic:validate": "pnpm --filter prismic-app prismic:validate",
     "prismic:check": "pnpm --filter prismic-app prismic:check",
     "dev:passport-scan": "pnpm --filter passport-scan-service dev",
-    "dev:prismic-app": "pnpm --filter prismic-app dev",
-    "dev:prismic": "pnpm --filter prismic-app dev",
     "dev:web": "pnpm --filter web dev",
     "format": "biome format --write .",
     "dev": "turbo dev",
     "lint": "turbo lint",
-    "slicemachine": "pnpm --filter prismic-app slicemachine",
     "typecheck": "turbo typecheck"
   },
   "devDependencies": {

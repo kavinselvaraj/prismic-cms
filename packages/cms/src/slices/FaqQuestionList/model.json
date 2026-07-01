@@ -2,14 +2,14 @@
   "id": "faq_question_list",
   "type": "SharedSlice",
   "name": "FaqQuestionList",
-  "description": "Question list with links to detail pages",
   "variations": [
     {
       "id": "default",
       "name": "Default",
+      "description": "Category page list of FAQ questions",
+      "imageUrl": "https://images.prismic.io/slice-machine/621a5ec4-0387-4bc5-9860-2dd46cbc07cd_default_ss.png?auto=compress,format",
       "docURL": "https://prismic.io/docs/slices",
       "version": "initial",
-      "description": "Category page list of FAQ questions",
       "primary": {
         "heading": {
           "type": "StructuredText",
@@ -41,5 +41,6 @@
         }
       }
     }
-  ]
+  ],
+  "description": "Question list with links to detail pages"
 }

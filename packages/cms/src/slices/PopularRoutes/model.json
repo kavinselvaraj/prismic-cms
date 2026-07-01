@@ -2,14 +2,14 @@
   "id": "popular_routes",
   "type": "SharedSlice",
   "name": "PopularRoutes",
-  "description": "Popular route links and labels",
   "variations": [
     {
       "id": "default",
       "name": "Default",
+      "description": "Default popular routes section",
+      "imageUrl": "https://images.prismic.io/slice-machine/621a5ec4-0387-4bc5-9860-2dd46cbc07cd_default_ss.png?auto=compress,format",
       "docURL": "https://prismic.io/docs/slices",
       "version": "initial",
-      "description": "Default popular routes section",
       "primary": {
         "title": {
           "type": "StructuredText",
@@ -27,5 +27,6 @@
       },
       "items": {}
     }
-  ]
+  ],
+  "description": "Popular route links and labels"
 }

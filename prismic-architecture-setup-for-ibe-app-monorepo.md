@@ -352,8 +352,6 @@ Recommended scripts:
 {
   "scripts": {
     "dev:ibe": "pnpm --filter ibe-app dev",
-    "dev:prismic": "pnpm --filter prismic-app dev",
-    "slicemachine": "pnpm --filter prismic-app slicemachine",
     "prismic:models:generate": "pnpm --filter prismic-app prismic:models:generate",
     "prismic:validate": "pnpm --filter prismic-app prismic:validate",
     "prismic:types:generate": "pnpm --filter prismic-app prismic:types:generate",
@@ -637,8 +635,6 @@ Commands:
 pnpm prismic:models:generate
 pnpm prismic:validate
 pnpm prismic:types:generate
-pnpm dev:prismic
-pnpm slicemachine
 pnpm prismic:seed:dry
 pnpm prismic:seed
 ```

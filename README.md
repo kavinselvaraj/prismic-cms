@@ -9,7 +9,7 @@ setup.
 apps/
   ibe-app/        IBE application
   web/            Public Next.js website and page content owner
-  prismic-app/    Slice Machine, custom types, and Prismic migration owner
+  prismic-app/    Prismic CLI, custom types, and Prismic migration owner
 
 packages/
   cms/            Shared Prismic slice rendering components only
@@ -33,13 +33,14 @@ Most developers add or update local content JSON, schemas, and page services in
 
 ```txt
 apps/prismic-app/customtypes/
-apps/prismic-app/slicemachine.config.json
+apps/prismic-app/prismic.config.json
 apps/prismic-app/scripts/
 apps/prismic-app/src/prismic/
 ```
 
-The CMS owner runs Slice Machine, syncs custom types, and seeds or configures
-Prismic content.
+The CMS owner uses Prismic Type Builder in the web UI, then uses this
+workspace to generate types, validate models, and seed or configure Prismic
+content.
 
 `packages/cms` owns only reusable slice components:
 
@@ -54,8 +55,6 @@ generation logic.
 
 ```bash
 pnpm dev:web
-pnpm dev:prismic
-pnpm slicemachine
 pnpm prismic:types:generate
 pnpm prismic:models:generate
 pnpm prismic:seed:dry
@@ -72,7 +71,7 @@ pnpm prismic:check
 4. Add or update the Next.js route in `apps/web/src/app`.
 5. Run `pnpm prismic:models:generate`.
 6. Confirm the model appears under `apps/prismic-app/customtypes`.
-7. The Prismic owner reviews and syncs the custom type in Slice Machine.
+7. The Prismic owner reviews the model and manages it in Prismic Type Builder.
 8. Seed initial content with `pnpm prismic:seed` or configure it in Prismic.
 
 ## How Web Reads Content
